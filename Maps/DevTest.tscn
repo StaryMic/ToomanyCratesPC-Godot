@@ -1,0 +1,110 @@
+[gd_scene load_steps=14 format=3 uid="uid://bivxc3041j1qd"]
+
+[ext_resource type="PackedScene" uid="uid://dmn3mi4c0tk3b" path="res://Mono/PlayerCharacter/PlayerCharacter.tscn" id="1_4ox2p"]
+[ext_resource type="Texture2D" uid="uid://dm3vot2d356on" path="res://Addons/kenney_prototype_textures/dark/texture_02.png" id="1_kuf6r"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_s1b5k"]
+sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+
+[sub_resource type="Sky" id="Sky_g3vpl"]
+sky_material = SubResource("ProceduralSkyMaterial_s1b5k")
+
+[sub_resource type="Environment" id="Environment_2vik4"]
+background_mode = 2
+sky = SubResource("Sky_g3vpl")
+tonemap_mode = 2
+ssao_enabled = true
+glow_enabled = true
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_0mi4t"]
+size = Vector3(25, 1, 25)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1dwp2"]
+albedo_texture = ExtResource("1_kuf6r")
+uv1_triplanar = true
+uv1_world_triplanar = true
+
+[sub_resource type="BoxMesh" id="BoxMesh_7odgs"]
+material = SubResource("StandardMaterial3D_1dwp2")
+size = Vector3(25, 1, 25)
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_6gfjx"]
+friction = 0.68
+rough = true
+bounce = 0.09
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_q5anb"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_k1u6m"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_q7wso"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ugraf"]
+
+[node name="Map" type="Node3D"]
+
+[node name="PlayerCharacter" parent="." instance=ExtResource("1_4ox2p")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 9.024)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.77384, -0.492924, 0.39774, 0, 0.627963, 0.778243, -0.633381, 0.602236, -0.485943, 0, 0, 0)
+shadow_enabled = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_2vik4")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+shape = SubResource("BoxShape3D_0mi4t")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D"]
+mesh = SubResource("BoxMesh_7odgs")
+
+[node name="RigidBody3D" type="RigidBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.46865, 5.78362)
+collision_layer = 4
+collision_mask = 15
+physics_material_override = SubResource("PhysicsMaterial_6gfjx")
+angular_damp = 2.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D"]
+shape = SubResource("BoxShape3D_q5anb")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="RigidBody3D"]
+mesh = SubResource("BoxMesh_k1u6m")
+
+[node name="RigidBody3D2" type="RigidBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.52349, 1.1857, 2.99307)
+collision_layer = 4
+collision_mask = 13
+mass = 2.0
+physics_material_override = SubResource("PhysicsMaterial_6gfjx")
+angular_damp = 2.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D2"]
+shape = SubResource("BoxShape3D_q5anb")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="RigidBody3D2"]
+mesh = SubResource("BoxMesh_k1u6m")
+
+[node name="RigidBody3D3" type="RigidBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.1714, 1.1857, 2.99307)
+mass = 3.0
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="RigidBody3D3"]
+mesh = SubResource("BoxMesh_q7wso")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D3"]
+shape = SubResource("BoxShape3D_ugraf")
+
+[node name="RigidBody3D4" type="RigidBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.78798, 1.1857, 2.99307)
+mass = 5.0
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="RigidBody3D4"]
+mesh = SubResource("BoxMesh_q7wso")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D4"]
+shape = SubResource("BoxShape3D_ugraf")
