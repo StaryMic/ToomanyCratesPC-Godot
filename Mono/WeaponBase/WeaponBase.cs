@@ -92,8 +92,14 @@ public partial class WeaponBase : Node3D
 
                     impactGpuParticles.GlobalPosition = RayCast3D.GetCollisionPoint();
                     
-                    // TODO: Orient particles to normal
-                    
+                    // Orient particles to normal vector
+                    // https://kidscancode.org/godot_recipes/3.x/3d/3d_align_surface/index.html
+                    // This saved my ass ^^^
+                    Vector3 basisY = RayCast3D.GetCollisionNormal();
+                    Vector3 basisX = -impactGpuParticles.GlobalTransform.Basis.X.Cross(RayCast3D.GetCollisionNormal());
+                    Vector3 basisZ = impactGpuParticles.GlobalTransform.Basis.Z;
+                    impactGpuParticles.Basis = new Basis(basisX,basisY,basisZ).Orthonormalized();
+
                 }
                 else
                 {
