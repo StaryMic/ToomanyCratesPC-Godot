@@ -72,13 +72,16 @@ public partial class WeaponBase : Node3D
     {
         for (int i = 0; i < WeaponDescriptor.BulletsPerShot; i++)
         {
+            // Fire off raycast with random offset determined by weapon spread and spread factor
             GD.Print("Firing bullet " + i);
             Vector3 RaycastOffset = new Vector3(
                 rng.RandfRange(-WeaponDescriptor.SpreadInDegrees, WeaponDescriptor.SpreadInDegrees) * _aimSpreadFactor,
                 rng.RandfRange(-WeaponDescriptor.SpreadInDegrees, WeaponDescriptor.SpreadInDegrees) * _aimSpreadFactor,
                 0).Normalized();
             RayCast3D.RotationDegrees = RaycastOffset;
-            GD.Print(RaycastOffset);
+            
+            // Make it update.
+            RayCast3D.ForceRaycastUpdate();
             
             if (RayCast3D.IsColliding())
             {
@@ -89,8 +92,9 @@ public partial class WeaponBase : Node3D
                 {
                     ImpactGPUParticles impactGpuParticles = (ImpactGPUParticles)_impactParticleScene.Instantiate();
                     GetTree().Root.GetChild(-1).AddChild(impactGpuParticles);
+                    GD.Print(impactGpuParticles.Name);
 
-                    impactGpuParticles.GlobalPosition = RayCast3D.GetCollisionPoint();
+                    // impactGpuParticles.GlobalPosition = RayCast3D.GetCollisionPoint();
                     
                     // Orient particles to normal vector
                     // https://kidscancode.org/godot_recipes/3.x/3d/3d_align_surface/index.html
@@ -99,6 +103,9 @@ public partial class WeaponBase : Node3D
                     Vector3 basisX = -impactGpuParticles.GlobalTransform.Basis.X.Cross(RayCast3D.GetCollisionNormal());
                     Vector3 basisZ = impactGpuParticles.GlobalTransform.Basis.Z;
                     impactGpuParticles.Basis = new Basis(basisX,basisY,basisZ).Orthonormalized();
+                    GD.Print(impactGpuParticles.Basis);
+                    
+                    impactGpuParticles.GlobalPosition = RayCast3D.GetCollisionPoint();
 
                 }
                 else
@@ -125,5 +132,6 @@ public partial class WeaponBase : Node3D
         
         _aimSpreadFactor = Mathf.MoveToward(_aimSpreadFactor, 0, (float)0.01);
         _aimSpreadFactor = Mathf.Clamp(_aimSpreadFactor, 0, 1);
+        GD.Print(_aimSpreadFactor);
     }
 }
