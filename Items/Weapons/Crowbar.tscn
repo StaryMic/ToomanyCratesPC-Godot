@@ -1,6 +1,7 @@
-[gd_scene load_steps=5 format=3 uid="uid://dlrav2fek8i38"]
+[gd_scene load_steps=6 format=3 uid="uid://dlrav2fek8i38"]
 
 [ext_resource type="Script" path="res://Mono/WeaponBase/WeaponBase.cs" id="1_vxosw"]
+[ext_resource type="Resource" uid="uid://cgmbq7y2enylt" path="res://Items/Weapons/Crowbar/Crowbar_desc.tres" id="2_2ry2n"]
 [ext_resource type="AnimationLibrary" uid="uid://dfksc0i15kymf" path="res://Items/Weapons/Crowbar/Animations/CrowbarAnimations.tres" id="4_cdloi"]
 
 [sub_resource type="Animation" id="Animation_pswcw"]
@@ -23,8 +24,9 @@ _data = {
 "RESET": SubResource("Animation_pswcw")
 }
 
-[node name="Crowbar" type="Node3D" node_paths=PackedStringArray("WeaponModel", "AnimationPlayer")]
+[node name="Weapon" type="Node3D" node_paths=PackedStringArray("WeaponModel", "AnimationPlayer")]
 script = ExtResource("1_vxosw")
+WeaponDescriptor = ExtResource("2_2ry2n")
 WeaponModel = NodePath("MeshInstance3D")
 AnimationPlayer = NodePath("AnimationPlayer")
 
