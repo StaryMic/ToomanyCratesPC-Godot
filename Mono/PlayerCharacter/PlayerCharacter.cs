@@ -6,8 +6,8 @@ public partial class PlayerCharacter : CharacterBody3D
 	public const float Speed = 5.0f;
 	public const float JumpVelocity = 4.5f;
 	public const float SprintSpeed = 7.5f;
-	public const float SlowdownSpeed = 0.25f;
-	public const float PushForce = 0.5f;
+	public const float SlowdownSpeed = 0.2f;
+	public const float PushForce = 0.75f;
 
 	public const float MouseSensitivity = 0.5f;
 
@@ -53,18 +53,25 @@ public partial class PlayerCharacter : CharacterBody3D
 		Vector3 direction = (Transform.Basis * new Vector3(inputDir.X, 0, inputDir.Y)).Normalized();
 		if (direction != Vector3.Zero && !Input.IsActionPressed("Sprint"))
 		{
-			velocity.X = direction.X * Speed;
 			velocity.Z = direction.Z * Speed;
+			velocity.X = direction.X * Speed;
 		} 
 		if (direction != Vector3.Zero && Input.IsActionPressed("Sprint"))
 		{
 			velocity.X = direction.X * SprintSpeed;
 			velocity.Z = direction.Z * SprintSpeed;
 		}
-		if(direction == Vector3.Zero)
+		if (direction == Vector3.Zero)
 		{
-			velocity.X = Mathf.MoveToward(Velocity.X, 0, SlowdownSpeed);
-			velocity.Z = Mathf.MoveToward(Velocity.Z, 0, SlowdownSpeed);
+			// velocity.X = Mathf.MoveToward(Velocity.X, 0, SlowdownSpeed);
+			// velocity.Z = Mathf.MoveToward(Velocity.Z, 0, SlowdownSpeed);
+			
+			// Vector3 tempVelocity = velocity.MoveToward(Vector3.Zero, 0.2f);
+			// tempVelocity.Y = velocity.Y;
+			// velocity = tempVelocity;
+			
+			velocity = velocity.MoveToward(new Vector3(0, velocity.Y, 0), SlowdownSpeed);
+			
 		}
 
 		Velocity = velocity;
