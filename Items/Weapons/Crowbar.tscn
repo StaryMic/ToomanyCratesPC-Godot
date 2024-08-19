@@ -1,0 +1,38 @@
+[gd_scene load_steps=5 format=3 uid="uid://dlrav2fek8i38"]
+
+[ext_resource type="Script" path="res://Mono/WeaponBase/WeaponBase.cs" id="1_vxosw"]
+[ext_resource type="AnimationLibrary" uid="uid://dfksc0i15kymf" path="res://Items/Weapons/Crowbar/Animations/CrowbarAnimations.tres" id="4_cdloi"]
+
+[sub_resource type="Animation" id="Animation_pswcw"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("MeshInstance3D:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_6skk2"]
+_data = {
+"RESET": SubResource("Animation_pswcw")
+}
+
+[node name="Crowbar" type="Node3D" node_paths=PackedStringArray("WeaponModel", "AnimationPlayer")]
+script = ExtResource("1_vxosw")
+WeaponModel = NodePath("MeshInstance3D")
+AnimationPlayer = NodePath("AnimationPlayer")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0, 0)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_6skk2"),
+"CrowbarAnimations": ExtResource("4_cdloi")
+}

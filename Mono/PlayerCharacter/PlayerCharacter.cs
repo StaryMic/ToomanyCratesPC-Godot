@@ -21,16 +21,13 @@ public partial class PlayerCharacter : CharacterBody3D
 
 	// Tracking active objects
 	private RigidBody3D _grabbedRigidBody;
-	private WeaponBase _equippedWeapon;
 
 	public override void _Ready()
 	{
 		Input.MouseMode = Input.MouseModeEnum.Captured;
 		_camera = GetNode<Camera3D>("Camera3D");
-		_rayCast = GetNode<RayCast3D>("Camera3D/RayCast3D");
+		_rayCast = GetNode<RayCast3D>("Camera3D/GrabRaycast");
 		_grabPoint = GetNode<Node3D>("Camera3D/GrabPoint");
-
-		_equippedWeapon = GetNode<WeaponBase>("Camera3D/Weapons/WeaponTest");
 	}
 
 	public override void _Process(double delta)

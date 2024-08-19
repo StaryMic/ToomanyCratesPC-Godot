@@ -1,0 +1,20 @@
+[gd_resource type="AnimationLibrary" load_steps=2 format=3 uid="uid://dfksc0i15kymf"]
+
+[sub_resource type="Animation" id="Animation_5kd7h"]
+resource_name = "CrowbarSwing"
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("MeshInstance3D:rotation:x")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(0, 0, 0),
+"points": PackedFloat32Array(0, -0.25, 0, 0.233333, 0.782141, -1.08385, -0.2, 0.553105, 0.25, 0, 0, -0.181797, -0.447691, 0.25, 0),
+"times": PackedFloat32Array(0, 0.3, 1)
+}
+
+[resource]
+_data = {
+"CrowbarSwing": SubResource("Animation_5kd7h")
+}

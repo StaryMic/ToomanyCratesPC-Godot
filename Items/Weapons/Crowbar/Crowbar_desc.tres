@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="WeaponResource" load_steps=7 format=3 uid="uid://cgmbq7y2enylt"]
+
+[ext_resource type="Script" path="res://Mono/WeaponBase/WeaponResource.cs" id="1_3khtq"]
+[ext_resource type="PackedScene" uid="uid://6vycji3f4ukj" path="res://Particles/TestSquares.tscn" id="1_dnegr"]
+[ext_resource type="AnimationLibrary" uid="uid://dfksc0i15kymf" path="res://Items/Weapons/Crowbar/Animations/CrowbarAnimations.tres" id="1_p7q8y"]
+[ext_resource type="ArrayMesh" uid="uid://cruuitcvvdt8" path="res://Items/Weapons/Crowbar/Models/Crowbar_mdl.res" id="2_2i2f4"]
+[ext_resource type="AudioStream" uid="uid://dijb1gi7aa401" path="res://Items/Weapons/Crowbar/Sounds/swoosh_test.wav" id="2_jfyka"]
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_fxkoc"]
+random_pitch = 1.19
+streams_count = 1
+stream_0/stream = ExtResource("2_jfyka")
+
+[resource]
+script = ExtResource("1_3khtq")
+WeaponName = &"Crowbar"
+Type = 0
+Damage = 5
+Range = 4.0
+Mesh = ExtResource("2_2i2f4")
+ImpactParticles = ExtResource("1_dnegr")
+AnimationLibraryToUse = ExtResource("1_p7q8y")
+FiringAnimations = PackedStringArray("CrowbarAnimations/CrowbarSwing")
+ReloadAnimations = PackedStringArray()
+SecondaryAnimations = PackedStringArray()
+SpreadInDegrees = 0.0
+BulletsPerShot = 1
+BulletsPerMagazine = -1
+CooldownPerShot = 0.2
+FiringSounds = SubResource("AudioStreamRandomizer_fxkoc")
+ForceOnImpact = 0.25

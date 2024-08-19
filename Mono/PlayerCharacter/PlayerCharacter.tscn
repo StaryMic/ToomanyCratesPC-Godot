@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://dmn3mi4c0tk3b"]
 
 [ext_resource type="Script" path="res://Mono/PlayerCharacter/PlayerCharacter.cs" id="1_83cae"]
-[ext_resource type="PackedScene" uid="uid://dlrav2fek8i38" path="res://Items/Weapons/WeaponTest.tscn" id="2_qg52t"]
+[ext_resource type="PackedScene" uid="uid://dlrav2fek8i38" path="res://Items/Weapons/Crowbar.tscn" id="2_qg52t"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_hkcpr"]
 
@@ -20,7 +20,7 @@ shape = SubResource("CapsuleShape3D_hkcpr")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8, 0)
 fov = 90.0
 
-[node name="RayCast3D" type="RayCast3D" parent="Camera3D"]
+[node name="GrabRaycast" type="RayCast3D" parent="Camera3D"]
 target_position = Vector3(0, 0, -2)
 collision_mask = 13
 collide_with_areas = true
@@ -29,8 +29,7 @@ debug_shape_custom_color = Color(0, 1, 0, 1)
 [node name="GrabPoint" type="Node3D" parent="Camera3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.123165, -1.8)
 
-[node name="Weapons" type="Node3D" parent="Camera3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.531147, -0.25702, -0.787728)
+[node name="WeaponRaycast" type="RayCast3D" parent="Camera3D"]
 
-[node name="WeaponTest" parent="Camera3D/Weapons" instance=ExtResource("2_qg52t")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0331204, 0, 0.0920423)
+[node name="Weapon" parent="Camera3D" instance=ExtResource("2_qg52t")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.564267, -0.25702, -0.695686)
