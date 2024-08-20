@@ -138,7 +138,7 @@ public partial class WeaponBase : Node3D
                     //     WeaponDescriptor.ForceOnImpact, RayCast3D.GetCollisionPoint() - physBody.GlobalPosition);
                     
                     // This method makes things move nicer than using the above method
-                    physBody.ApplyTorqueImpulse(RayCast3D.GetCollisionPoint() - physBody.GlobalPosition);
+                    physBody.ApplyTorqueImpulse((RayCast3D.GetCollisionPoint() - physBody.GlobalPosition).Normalized() * 0.5f);
                     physBody.ApplyImpulse((RayCast3D.GetCollisionPoint() - RayCast3D.GlobalPosition).Normalized() * WeaponDescriptor.ForceOnImpact);
                 }
             }
