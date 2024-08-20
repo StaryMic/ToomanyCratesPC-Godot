@@ -11,8 +11,6 @@ public partial class PlayerCharacter : CharacterBody3D
 
 	public const float MouseSensitivity = 0.3f;
 	
-	[Export] private PackedScene TempImpactParticles;
-
 	// Get the gravity from the project settings to be synced with RigidBody nodes.
 	public float Gravity = ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle();
 	

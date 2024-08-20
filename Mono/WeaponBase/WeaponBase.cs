@@ -7,12 +7,17 @@ using TooManyCratesPC.Mono.WeaponBase;
 
 public partial class WeaponBase : Node3D
 {
+    // Setup
     [Export] public WeaponResource WeaponDescriptor;
-    [Export] public MeshInstance3D WeaponModel;
-    [Export] public AnimationPlayer AnimationPlayer;
     [Export] public Timer CooldownTimer;
+    [Export] public Timer ReloadTimer;
     [Export] public RayCast3D RayCast3D;
     [Export] public AudioStreamPlayer AudioStreamPlayer;
+    
+    // Dynamically found items
+    private Node3D modelNode;
+    private AnimationPlayer animationPlayer;
+    private MeshInstance3D weaponMesh;
     
     private RandomNumberGenerator rng = new RandomNumberGenerator();
     private int _bulletsInMagazine;
@@ -28,21 +33,29 @@ public partial class WeaponBase : Node3D
     public void SwapWeapon()
     {
         // Stop old things
-        AnimationPlayer.Stop();
+        animationPlayer?.Stop();
+        modelNode?.QueueFree();
         CooldownTimer.Stop();
+        ReloadTimer.Stop();
         AudioStreamPlayer.Stop();
         
         // Init and load new things
         AudioStreamPlayer.Stream = WeaponDescriptor.FiringSounds;
         CooldownTimer.WaitTime = WeaponDescriptor.CooldownPerShot;
+        ReloadTimer.WaitTime = WeaponDescriptor.ReloadTime;
         RayCast3D.TargetPosition = new Vector3(0, 0, -WeaponDescriptor.Range);
-        WeaponModel.SetMesh(WeaponDescriptor.Mesh);
         _impactParticleScene = WeaponDescriptor.ImpactParticles;
-        if (!AnimationPlayer.HasAnimationLibrary(WeaponDescriptor.AnimationLibraryToUse.ResourceName))
-        {
-            AnimationPlayer.AddAnimationLibrary(WeaponDescriptor.AnimationLibraryToUse.ResourceName,
-                WeaponDescriptor.AnimationLibraryToUse);
-        }
+        
+        // Spawn the new weapon model
+        modelNode = WeaponDescriptor.MeshScene.Instantiate<Node3D>();
+        this.AddChild(modelNode);
+        
+        // Find the animationplayer for the new model
+        animationPlayer = modelNode.GetChild<AnimationPlayer>(1);
+        
+        // Find and set mesh to be on the Viewmodel layer (2)
+        weaponMesh = modelNode.GetChild(0).GetChild<MeshInstance3D>(0);
+        weaponMesh.Layers = 2;
     }
 
     private void PrimaryAction()
@@ -52,15 +65,19 @@ public partial class WeaponBase : Node3D
             switch (WeaponDescriptor.Type)
             {
                 case 0: //Melee
-                    if (AnimationPlayer.IsPlaying())
+                    if (animationPlayer.IsPlaying())
                     {
-                        AnimationPlayer.Stop();
+                        animationPlayer.Stop();
                     }
-                    AnimationPlayer.Play(WeaponDescriptor.FiringAnimations[rng.RandiRange(0, WeaponDescriptor.FiringAnimations.Length - 1)]);
+                    animationPlayer.Play(WeaponDescriptor.FiringAnimations[rng.RandiRange(0, WeaponDescriptor.FiringAnimations.Length - 1)]);
                     AudioStreamPlayer.Play();
                     FireRaycast();
                     CooldownTimer.Start(WeaponDescriptor.CooldownPerShot);
                     break;
+                case 1: //Automatic
+                    break;
+                    
+                
                 default:
                     throw new WarningException("Unable to determine weapon type.");
             }

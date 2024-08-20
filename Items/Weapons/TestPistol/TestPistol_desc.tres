@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="WeaponResource" load_steps=3 format=3 uid="uid://bpotvo4us2sb0"]
+
+[ext_resource type="PackedScene" uid="uid://6vycji3f4ukj" path="res://Particles/TestSquares.tscn" id="1_ev0nn"]
+[ext_resource type="Script" path="res://Mono/WeaponBase/WeaponResource.cs" id="1_sxmek"]
+
+[resource]
+script = ExtResource("1_sxmek")
+WeaponName = &"TestPistol"
+Type = 1
+Damage = 2
+Range = 100.0
+ReloadTime = 2.0
+ImpactParticles = ExtResource("1_ev0nn")
+FiringAnimations = PackedStringArray()
+ReloadAnimations = PackedStringArray()
+SecondaryAnimations = PackedStringArray()
+SpreadInDegrees = 15.0
+BulletsPerShot = 1
+BulletsPerMagazine = 8
+CooldownPerShot = 0.1
+ForceOnImpact = 0.4

@@ -1,8 +1,8 @@
 [gd_scene load_steps=6 format=3 uid="uid://dmn3mi4c0tk3b"]
 
 [ext_resource type="Script" path="res://Mono/PlayerCharacter/PlayerCharacter.cs" id="1_83cae"]
-[ext_resource type="PackedScene" uid="uid://bfw15wnum2sso" path="res://Particles/BrightSphere.tscn" id="2_dkq45"]
 [ext_resource type="PackedScene" uid="uid://dlrav2fek8i38" path="res://Items/Weapons/Weapon.tscn" id="2_qg52t"]
+[ext_resource type="Resource" uid="uid://cgmbq7y2enylt" path="res://Items/Weapons/Crowbar/Crowbar_desc.tres" id="3_pyc31"]
 [ext_resource type="Texture2D" uid="uid://8lkjeehlgtvx" path="res://Mono/PlayerCharacter/UI/Circle.svg" id="3_yk1sf"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_xpsck"]
@@ -14,7 +14,6 @@ collision_mask = 13
 platform_on_leave = 2
 platform_floor_layers = 1
 script = ExtResource("1_83cae")
-TempImpactParticles = ExtResource("2_dkq45")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
@@ -43,6 +42,7 @@ debug_shape_thickness = 1
 
 [node name="Weapon" parent="Camera3D" node_paths=PackedStringArray("RayCast3D") instance=ExtResource("2_qg52t")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.564267, -0.25702, -0.695686)
+WeaponDescriptor = ExtResource("3_pyc31")
 RayCast3D = NodePath("../WeaponRaycast")
 
 [node name="SubViewportContainer" type="SubViewportContainer" parent="Camera3D"]

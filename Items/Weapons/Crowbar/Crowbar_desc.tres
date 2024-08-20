@@ -1,9 +1,7 @@
-[gd_resource type="Resource" script_class="WeaponResource" load_steps=16 format=3 uid="uid://cgmbq7y2enylt"]
+[gd_resource type="Resource" script_class="WeaponResource" load_steps=15 format=3 uid="uid://cgmbq7y2enylt"]
 
 [ext_resource type="Script" path="res://Mono/WeaponBase/WeaponResource.cs" id="1_3khtq"]
 [ext_resource type="PackedScene" uid="uid://6vycji3f4ukj" path="res://Particles/TestSquares.tscn" id="1_dnegr"]
-[ext_resource type="AnimationLibrary" uid="uid://dfksc0i15kymf" path="res://Items/Weapons/Crowbar/Animations/CrowbarAnimations.tres" id="1_p7q8y"]
-[ext_resource type="ArrayMesh" uid="uid://cruuitcvvdt8" path="res://Items/Weapons/Crowbar/Models/Crowbar_mdl.res" id="2_2i2f4"]
 [ext_resource type="AudioStream" uid="uid://dim7xurklvvul" path="res://Items/Weapons/Crowbar/Sounds/Swooshes, Swish, Wood Stick, Heavy SND0419 1 1.wav" id="2_6u14v"]
 [ext_resource type="AudioStream" uid="uid://b72qyee4ak4vh" path="res://Items/Weapons/Crowbar/Sounds/Swooshes, Swish, Wood Stick, Heavy SND0419 1 2.wav" id="3_tlfnb"]
 [ext_resource type="AudioStream" uid="uid://2e7r24j01lat" path="res://Items/Weapons/Crowbar/Sounds/Swooshes, Swish, Wood Stick, Heavy SND0419 1 3.wav" id="4_1ucb0"]
@@ -13,6 +11,7 @@
 [ext_resource type="AudioStream" uid="uid://ltm7h2ntu8rb" path="res://Sounds/Impacts/Bullets, Impact, Glass, Heavy SND6336 3.wav" id="9_rd0ls"]
 [ext_resource type="AudioStream" uid="uid://cqmmwuiev3be6" path="res://Sounds/Impacts/Bullets, Impact, Glass, Heavy SND6336 4.wav" id="10_nnq8c"]
 [ext_resource type="AudioStream" uid="uid://boaypwwfufsxf" path="res://Sounds/Impacts/Bullets, Impact, Glass, Heavy SND6336 5.wav" id="11_8i7pf"]
+[ext_resource type="PackedScene" uid="uid://dyhmgsd3w3vjc" path="res://Items/Weapons/Crowbar/Models/Crowbar.glb" id="11_8qf78"]
 
 [sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_fxkoc"]
 random_pitch = 1.19
@@ -38,10 +37,10 @@ WeaponName = &"Crowbar"
 Type = 0
 Damage = 5
 Range = 500.0
-Mesh = ExtResource("2_2i2f4")
+ReloadTime = 0.0
+MeshScene = ExtResource("11_8qf78")
 ImpactParticles = ExtResource("1_dnegr")
-AnimationLibraryToUse = ExtResource("1_p7q8y")
-FiringAnimations = PackedStringArray("CrowbarAnimations/CrowbarSwing")
+FiringAnimations = PackedStringArray("Swing01")
 ReloadAnimations = PackedStringArray()
 SecondaryAnimations = PackedStringArray()
 SpreadInDegrees = 5.0
