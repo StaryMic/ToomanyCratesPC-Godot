@@ -10,6 +10,8 @@ public partial class PlayerCharacter : CharacterBody3D
 	public const float PushForce = 0.75f;
 
 	public const float MouseSensitivity = 0.3f;
+	
+	[Export] private PackedScene TempImpactParticles;
 
 	// Get the gravity from the project settings to be synced with RigidBody nodes.
 	public float Gravity = ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle();
@@ -18,6 +20,7 @@ public partial class PlayerCharacter : CharacterBody3D
 	private Camera3D _camera;
 	private RayCast3D _rayCast;
 	private Node3D _grabPoint;
+	private Camera3D _viewmodelCamera;
 
 	// Tracking active objects
 	private RigidBody3D _grabbedRigidBody;
@@ -28,11 +31,16 @@ public partial class PlayerCharacter : CharacterBody3D
 		_camera = GetNode<Camera3D>("Camera3D");
 		_rayCast = GetNode<RayCast3D>("Camera3D/GrabRaycast");
 		_grabPoint = GetNode<Node3D>("Camera3D/GrabPoint");
+		_viewmodelCamera = GetNode<Camera3D>("Camera3D/SubViewportContainer/SubViewport/Camera3D");
 	}
 
 	public override void _Process(double delta)
 	{
+		// Clamp camera
 		_camera.Rotation = new Vector3(Mathf.DegToRad(Mathf.Clamp(_camera.RotationDegrees.X, -85, 85)),0,0);
+		
+		// Align viewport cam with normal cam.
+		_viewmodelCamera.GlobalTransform = _camera.GlobalTransform;
 	}
 
 	public override void _PhysicsProcess(double delta)
@@ -107,17 +115,17 @@ public partial class PlayerCharacter : CharacterBody3D
 		{
 			if (GetSlideCollision(i).GetCollider() is RigidBody3D rigidBody3D)
 			{
-				// TODO: make the push stuff work again. I fucked up :(
 				if (rigidBody3D.GlobalPosition.Y < GlobalPosition.Y)
 				{
-					GD.Print((rigidBody3D.GlobalPosition - GlobalPosition).Normalized().Dot(Vector3.Up));
+					// If we are standing on top of a prop, do not push it.
 					break;
 				}
 				
-				Vector3 PushDir = new Vector3(-GetSlideCollision(i).GetNormal().X, 0,
-					-GetSlideCollision(i).GetNormal().Z);
-				rigidBody3D.ApplyImpulse(-this.Basis.Z.Normalized() * PushForce, rigidBody3D.GlobalPosition - this.GlobalPosition);
-				GD.Print("Impulse Applied");
+				// Push props out of the way
+				rigidBody3D.ApplyCentralImpulse(-GetSlideCollision(i).GetNormal() * PushForce);
+				rigidBody3D.ApplyImpulse(-GetSlideCollision(i).GetNormal() * PushForce * 0.5f,
+					GetSlideCollision(i).GetPosition() -
+					(Vector3)GetSlideCollision(i).GetCollider().Get(Node3D.PropertyName.GlobalPosition));
 			}
 		}
 	}

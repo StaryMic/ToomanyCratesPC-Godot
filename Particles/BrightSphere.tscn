@@ -1,0 +1,39 @@
+[gd_scene load_steps=7 format=3 uid="uid://bfw15wnum2sso"]
+
+[ext_resource type="Script" path="res://Mono/ImpactNodes/ImpactGPUParticles.cs" id="1_vuvh8"]
+
+[sub_resource type="Curve" id="Curve_dm8f5"]
+_data = [Vector2(0, 0), 0.0, 5.47399, 0, 0, Vector2(0.5, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), -5.04092, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_nk53y"]
+curve = SubResource("Curve_dm8f5")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_eactm"]
+gravity = Vector3(0, 0, 0)
+scale_min = 0.15
+scale_max = 0.15
+scale_curve = SubResource("CurveTexture_nk53y")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gcrap"]
+shading_mode = 0
+diffuse_mode = 3
+specular_mode = 2
+disable_ambient_light = true
+disable_fog = true
+albedo_color = Color(1, 0, 1, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_own27"]
+material = SubResource("StandardMaterial3D_gcrap")
+radial_segments = 6
+rings = 6
+
+[node name="BrightSquares" type="GPUParticles3D"]
+cast_shadow = 0
+emitting = false
+amount = 1
+lifetime = 5.0
+one_shot = true
+process_material = SubResource("ParticleProcessMaterial_eactm")
+draw_pass_1 = SubResource("SphereMesh_own27")
+script = ExtResource("1_vuvh8")

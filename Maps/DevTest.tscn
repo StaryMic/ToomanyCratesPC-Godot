@@ -52,7 +52,7 @@ rings = 16
 [node name="Map" type="Node3D"]
 
 [node name="PlayerCharacter" parent="." instance=ExtResource("1_4ox2p")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 9.024)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 9.024)
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(-0.77384, -0.492924, 0.39774, 0, 0.627963, 0.778243, -0.633381, 0.602236, -0.485943, 0, 0, 0)
@@ -109,6 +109,7 @@ shape = SubResource("BoxShape3D_ugraf")
 [node name="RigidBody3D4" type="RigidBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.78798, 1.1857, 2.99307)
 mass = 5.0
+inertia = Vector3(1, 1, 1)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="RigidBody3D4"]
 mesh = SubResource("BoxMesh_q7wso")
