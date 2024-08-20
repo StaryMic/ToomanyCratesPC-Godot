@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://dmn3mi4c0tk3b"]
+[gd_scene load_steps=5 format=3 uid="uid://dmn3mi4c0tk3b"]
 
 [ext_resource type="Script" path="res://Mono/PlayerCharacter/PlayerCharacter.cs" id="1_83cae"]
-[ext_resource type="PackedScene" uid="uid://dlrav2fek8i38" path="res://Items/Weapons/Crowbar.tscn" id="2_qg52t"]
+[ext_resource type="PackedScene" uid="uid://dlrav2fek8i38" path="res://Items/Weapons/Weapon.tscn" id="2_qg52t"]
+[ext_resource type="Texture2D" uid="uid://8lkjeehlgtvx" path="res://Mono/PlayerCharacter/UI/Circle.svg" id="3_yk1sf"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_hkcpr"]
 
@@ -14,7 +15,6 @@ script = ExtResource("1_83cae")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
-visible = false
 shape = SubResource("CapsuleShape3D_hkcpr")
 
 [node name="Camera3D" type="Camera3D" parent="."]
@@ -39,3 +39,26 @@ debug_shape_thickness = 1
 [node name="Weapon" parent="Camera3D" node_paths=PackedStringArray("RayCast3D") instance=ExtResource("2_qg52t")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.564267, -0.25702, -0.695686)
 RayCast3D = NodePath("../WeaponRaycast")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+follow_viewport_enabled = true
+
+[node name="TextureRect" type="TextureRect" parent="CanvasLayer"]
+texture_filter = 1
+texture_repeat = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -400.0
+offset_top = -400.0
+offset_right = 400.0
+offset_bottom = 400.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.005, 0.005)
+pivot_offset = Vector2(400, 400)
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = ExtResource("3_yk1sf")

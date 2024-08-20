@@ -9,7 +9,7 @@ public partial class PlayerCharacter : CharacterBody3D
 	public const float SlowdownSpeed = 0.2f;
 	public const float PushForce = 0.75f;
 
-	public const float MouseSensitivity = 0.5f;
+	public const float MouseSensitivity = 0.3f;
 
 	// Get the gravity from the project settings to be synced with RigidBody nodes.
 	public float Gravity = ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle();
@@ -79,32 +79,22 @@ public partial class PlayerCharacter : CharacterBody3D
 		// Handle grabbed objects
 		if (_grabbedRigidBody != null)
 		{
-			// Moves the item to the grab position
-			_grabbedRigidBody.LinearVelocity = Vector3.Zero;
-			KinematicCollision3D RigidBodyCollision = _grabbedRigidBody.MoveAndCollide(
-				(_grabPoint.GlobalPosition - _grabbedRigidBody.GlobalPosition).Normalized() *
-				_grabbedRigidBody.GlobalPosition.DistanceTo(_grabPoint.GlobalPosition) *
-				10 *
-				(float)delta,
-				false,
-				0.001f,
-				true,
-				3);
+			// Remove gravity so interactions work nicer.
+			Vector3 removeYVelocity = new Vector3(_grabbedRigidBody.LinearVelocity.X, 0, _grabbedRigidBody.LinearVelocity.Z);
+			_grabbedRigidBody.LinearVelocity = removeYVelocity;
 			
-			GD.Print("distance to grab: " + _grabbedRigidBody.GlobalPosition.DistanceTo(_grabPoint.GlobalPosition));
-			if (_grabbedRigidBody.GlobalPosition.DistanceTo(_grabPoint.GlobalPosition) > 1.25f)
+			// Moves the item to the grab position
+			_grabbedRigidBody.LinearVelocity = (_grabPoint.GlobalPosition - _grabbedRigidBody.GlobalPosition) * 10;
+			
+			// Make sure player isn't standing on top of the object
+			// ...cheating bastards
+			for (int i = 0; i < GetSlideCollisionCount(); i++)
 			{
-				_grabbedRigidBody = null;
-			}
-
-			if (RigidBodyCollision != null)
-			{
-				GD.Print("Hit " + RigidBodyCollision.GetCollider().GetClass());
-				if (RigidBodyCollision.GetCollider() is CharacterBody3D player)
+				if (GetSlideCollision(i).GetCollider() is RigidBody3D rigidBody3D && rigidBody3D.GetRid() == _grabbedRigidBody.GetRid())
 				{
-					if (player.GlobalPosition.Y > _grabbedRigidBody.GlobalPosition.Y)
+					if (_grabbedRigidBody.GlobalPosition.Y < this.GlobalPosition.Y)
 					{
-						_grabbedRigidBody = null;
+						DropRigidBody();
 					}
 				}
 			}
@@ -112,16 +102,24 @@ public partial class PlayerCharacter : CharacterBody3D
 
 		MoveAndSlide();
 
+		// Push phys props out of the way
 		for (int i = 0; i < GetSlideCollisionCount(); i++)
 		{
-			if (GetSlideCollision(i).GetCollider() is RigidBody3D rigidBody3D && this.GlobalPosition.Y < rigidBody3D.GlobalPosition.Y)
+			if (GetSlideCollision(i).GetCollider() is RigidBody3D rigidBody3D)
 			{
+				// TODO: make the push stuff work again. I fucked up :(
+				if (rigidBody3D.GlobalPosition.Y < GlobalPosition.Y)
+				{
+					GD.Print((rigidBody3D.GlobalPosition - GlobalPosition).Normalized().Dot(Vector3.Up));
+					break;
+				}
+				
 				Vector3 PushDir = new Vector3(-GetSlideCollision(i).GetNormal().X, 0,
 					-GetSlideCollision(i).GetNormal().Z);
-				rigidBody3D.ApplyCentralImpulse(PushDir * PushForce);
+				rigidBody3D.ApplyImpulse(-this.Basis.Z.Normalized() * PushForce, rigidBody3D.GlobalPosition - this.GlobalPosition);
+				GD.Print("Impulse Applied");
 			}
 		}
-		
 	}
 
 	public override void _Input(InputEvent @event)
@@ -136,16 +134,27 @@ public partial class PlayerCharacter : CharacterBody3D
 		{
 			if (_grabbedRigidBody != null)
 			{
-				_grabbedRigidBody = null;
-				GD.Print("Ungrabbed");
+				DropRigidBody();
 				return;
 			}
 			
 			if (_rayCast.IsColliding() && _rayCast.GetCollider() is RigidBody3D body && body.Mass <= 5)
 			{
-				_grabbedRigidBody = body;
+				GrabRigidBody(body);
 				GD.Print("Grabbed " + body.Name);
 			}
 		}
+	}
+
+	private void GrabRigidBody(RigidBody3D body)
+	{
+		GD.Print("Grabbing");
+		_grabbedRigidBody = body;
+	}
+
+	private void DropRigidBody()
+	{
+		GD.Print("Dropping");
+		_grabbedRigidBody = null;
 	}
 }

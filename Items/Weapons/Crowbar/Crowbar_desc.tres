@@ -1,31 +1,53 @@
-[gd_resource type="Resource" script_class="WeaponResource" load_steps=7 format=3 uid="uid://cgmbq7y2enylt"]
+[gd_resource type="Resource" script_class="WeaponResource" load_steps=16 format=3 uid="uid://cgmbq7y2enylt"]
 
 [ext_resource type="Script" path="res://Mono/WeaponBase/WeaponResource.cs" id="1_3khtq"]
 [ext_resource type="PackedScene" uid="uid://6vycji3f4ukj" path="res://Particles/TestSquares.tscn" id="1_dnegr"]
 [ext_resource type="AnimationLibrary" uid="uid://dfksc0i15kymf" path="res://Items/Weapons/Crowbar/Animations/CrowbarAnimations.tres" id="1_p7q8y"]
 [ext_resource type="ArrayMesh" uid="uid://cruuitcvvdt8" path="res://Items/Weapons/Crowbar/Models/Crowbar_mdl.res" id="2_2i2f4"]
-[ext_resource type="AudioStream" uid="uid://dijb1gi7aa401" path="res://Items/Weapons/Crowbar/Sounds/swoosh_test.wav" id="2_jfyka"]
+[ext_resource type="AudioStream" uid="uid://dim7xurklvvul" path="res://Items/Weapons/Crowbar/Sounds/Swooshes, Swish, Wood Stick, Heavy SND0419 1 1.wav" id="2_6u14v"]
+[ext_resource type="AudioStream" uid="uid://b72qyee4ak4vh" path="res://Items/Weapons/Crowbar/Sounds/Swooshes, Swish, Wood Stick, Heavy SND0419 1 2.wav" id="3_tlfnb"]
+[ext_resource type="AudioStream" uid="uid://2e7r24j01lat" path="res://Items/Weapons/Crowbar/Sounds/Swooshes, Swish, Wood Stick, Heavy SND0419 1 3.wav" id="4_1ucb0"]
+[ext_resource type="AudioStream" uid="uid://cq1kdwsqexij7" path="res://Items/Weapons/Crowbar/Sounds/Swooshes, Swish, Wood Stick, Heavy SND0419 1.wav" id="5_ipgk3"]
+[ext_resource type="AudioStream" uid="uid://cybbt3egdf7lx" path="res://Sounds/Impacts/Bullets, Impact, Glass, Heavy SND6336 1.wav" id="7_6vplm"]
+[ext_resource type="AudioStream" uid="uid://d1ur60ikmk35" path="res://Sounds/Impacts/Bullets, Impact, Glass, Heavy SND6336 2.wav" id="8_vacdh"]
+[ext_resource type="AudioStream" uid="uid://ltm7h2ntu8rb" path="res://Sounds/Impacts/Bullets, Impact, Glass, Heavy SND6336 3.wav" id="9_rd0ls"]
+[ext_resource type="AudioStream" uid="uid://cqmmwuiev3be6" path="res://Sounds/Impacts/Bullets, Impact, Glass, Heavy SND6336 4.wav" id="10_nnq8c"]
+[ext_resource type="AudioStream" uid="uid://boaypwwfufsxf" path="res://Sounds/Impacts/Bullets, Impact, Glass, Heavy SND6336 5.wav" id="11_8i7pf"]
 
 [sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_fxkoc"]
 random_pitch = 1.19
-streams_count = 1
-stream_0/stream = ExtResource("2_jfyka")
+streams_count = 4
+stream_0/stream = ExtResource("2_6u14v")
+stream_1/stream = ExtResource("3_tlfnb")
+stream_2/stream = ExtResource("4_1ucb0")
+stream_3/stream = ExtResource("5_ipgk3")
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_hx588"]
+random_pitch = 1.36
+random_volume_offset_db = 0.97
+streams_count = 5
+stream_0/stream = ExtResource("7_6vplm")
+stream_1/stream = ExtResource("8_vacdh")
+stream_2/stream = ExtResource("9_rd0ls")
+stream_3/stream = ExtResource("10_nnq8c")
+stream_4/stream = ExtResource("11_8i7pf")
 
 [resource]
 script = ExtResource("1_3khtq")
 WeaponName = &"Crowbar"
 Type = 0
 Damage = 5
-Range = 4.0
+Range = 5.0
 Mesh = ExtResource("2_2i2f4")
 ImpactParticles = ExtResource("1_dnegr")
 AnimationLibraryToUse = ExtResource("1_p7q8y")
 FiringAnimations = PackedStringArray("CrowbarAnimations/CrowbarSwing")
 ReloadAnimations = PackedStringArray()
 SecondaryAnimations = PackedStringArray()
-SpreadInDegrees = 75.0
-BulletsPerShot = 25
+SpreadInDegrees = 5.0
+BulletsPerShot = 5
 BulletsPerMagazine = -1
 CooldownPerShot = 0.5
 FiringSounds = SubResource("AudioStreamRandomizer_fxkoc")
-ForceOnImpact = 0.25
+ImpactSounds = SubResource("AudioStreamRandomizer_hx588")
+ForceOnImpact = 0.8
