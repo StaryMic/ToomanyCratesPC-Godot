@@ -7,9 +7,9 @@ public partial class WeaponBase : Node3D
     // Setup
     [Export] public WeaponResource WeaponDescriptor;
     [Export] public Timer CooldownTimer;
-    [Export] public Timer ReloadTimer;
     [Export] public RayCast3D RayCast3D;
     [Export] public AudioStreamPlayer AudioStreamPlayer;
+    [Export] public PlayerCharacter PlayerCharacter;
     
     // Dynamically found items
     private Node3D modelNode;
@@ -40,7 +40,6 @@ public partial class WeaponBase : Node3D
         }
         modelNode?.QueueFree();
         CooldownTimer.Stop();
-        ReloadTimer.Stop();
         AudioStreamPlayer.Stop();
         
         // Init and load new things
@@ -65,6 +64,12 @@ public partial class WeaponBase : Node3D
 
     private void PrimaryAction()
     {
+        if (PlayerCharacter.GrabbedRigidBody != null)
+        {
+            PlayerCharacter.ThrowRigidBody();
+            CooldownTimer.Start(0.75f);
+        }
+        
         if (CooldownTimer.IsStopped())
         {
             switch (WeaponDescriptor.Type)

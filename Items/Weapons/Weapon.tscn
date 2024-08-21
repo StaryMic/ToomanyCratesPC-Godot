@@ -3,11 +3,10 @@
 [ext_resource type="Script" path="res://Mono/WeaponBase/WeaponBase.cs" id="1_6lsp2"]
 [ext_resource type="Resource" uid="uid://bpotvo4us2sb0" path="res://Items/Weapons/TestPistol/TestPistol_desc.tres" id="2_unons"]
 
-[node name="Weapon" type="Node3D" node_paths=PackedStringArray("CooldownTimer", "ReloadTimer", "AudioStreamPlayer")]
+[node name="Weapon" type="Node3D" node_paths=PackedStringArray("CooldownTimer", "AudioStreamPlayer")]
 script = ExtResource("1_6lsp2")
 WeaponDescriptor = ExtResource("2_unons")
 CooldownTimer = NodePath("CooldownTimer")
-ReloadTimer = NodePath("ReloadTimer")
 AudioStreamPlayer = NodePath("AudioStreamPlayer")
 
 [node name="CooldownTimer" type="Timer" parent="."]

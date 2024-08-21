@@ -8,6 +8,7 @@ public partial class PlayerCharacter : CharacterBody3D
 	public const float SprintSpeed = 7.5f;
 	public const float SlowdownSpeed = 0.2f;
 	public const float PushForce = 0.75f;
+	public const float ThrowForce = 1.5f;
 
 	public const float MouseSensitivity = 0.3f;
 	
@@ -21,7 +22,7 @@ public partial class PlayerCharacter : CharacterBody3D
 	private Camera3D _viewmodelCamera;
 
 	// Tracking active objects
-	private RigidBody3D _grabbedRigidBody;
+	public RigidBody3D GrabbedRigidBody;
 
 	public override void _Ready()
 	{
@@ -83,22 +84,22 @@ public partial class PlayerCharacter : CharacterBody3D
 		Velocity = velocity;
 		
 		// Handle grabbed objects
-		if (_grabbedRigidBody != null)
+		if (GrabbedRigidBody != null)
 		{
 			// Remove gravity so interactions work nicer.
-			Vector3 removeYVelocity = new Vector3(_grabbedRigidBody.LinearVelocity.X, 0, _grabbedRigidBody.LinearVelocity.Z);
-			_grabbedRigidBody.LinearVelocity = removeYVelocity;
+			Vector3 removeYVelocity = new Vector3(GrabbedRigidBody.LinearVelocity.X, 0, GrabbedRigidBody.LinearVelocity.Z);
+			GrabbedRigidBody.LinearVelocity = removeYVelocity;
 			
 			// Moves the item to the grab position
-			_grabbedRigidBody.LinearVelocity = (_grabPoint.GlobalPosition - _grabbedRigidBody.GlobalPosition) * 10;
+			GrabbedRigidBody.LinearVelocity = (_grabPoint.GlobalPosition - GrabbedRigidBody.GlobalPosition) * 10;
 			
 			// Make sure player isn't standing on top of the object
 			// ...cheating bastards
 			for (int i = 0; i < GetSlideCollisionCount(); i++)
 			{
-				if (GetSlideCollision(i).GetCollider() is RigidBody3D rigidBody3D && rigidBody3D.GetRid() == _grabbedRigidBody.GetRid())
+				if (GetSlideCollision(i).GetCollider() is RigidBody3D rigidBody3D && rigidBody3D.GetRid() == GrabbedRigidBody.GetRid())
 				{
-					if (_grabbedRigidBody.GlobalPosition.Y < this.GlobalPosition.Y)
+					if (GrabbedRigidBody.GlobalPosition.Y < this.GlobalPosition.Y)
 					{
 						DropRigidBody();
 					}
@@ -138,7 +139,7 @@ public partial class PlayerCharacter : CharacterBody3D
 
 		if (Input.IsActionJustPressed("Use"))
 		{
-			if (_grabbedRigidBody != null)
+			if (GrabbedRigidBody != null)
 			{
 				DropRigidBody();
 				return;
@@ -155,12 +156,25 @@ public partial class PlayerCharacter : CharacterBody3D
 	private void GrabRigidBody(RigidBody3D body)
 	{
 		GD.Print("Grabbing");
-		_grabbedRigidBody = body;
+		GrabbedRigidBody = body;
 	}
 
 	private void DropRigidBody()
 	{
 		GD.Print("Dropping");
-		_grabbedRigidBody = null;
+		GrabbedRigidBody = null;
+	}
+
+	public void ThrowRigidBody()
+	{
+		GD.Print("Throwing");
+		// Store a temp reference to the rigidbody
+		RigidBody3D body = GrabbedRigidBody;
+		
+		// Drop it
+		DropRigidBody();
+		
+		// Apply a force from the player camera's forward axis
+		body.ApplyImpulse(-_camera.GlobalBasis.Z.Normalized() * ThrowForce);
 	}
 }
