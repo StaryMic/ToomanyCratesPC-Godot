@@ -1,7 +1,8 @@
-[gd_resource type="Resource" script_class="WeaponResource" load_steps=3 format=3 uid="uid://bpotvo4us2sb0"]
+[gd_resource type="Resource" script_class="WeaponResource" load_steps=4 format=3 uid="uid://bpotvo4us2sb0"]
 
 [ext_resource type="PackedScene" uid="uid://6vycji3f4ukj" path="res://Particles/TestSquares.tscn" id="1_ev0nn"]
 [ext_resource type="Script" path="res://Mono/WeaponBase/WeaponResource.cs" id="1_sxmek"]
+[ext_resource type="PackedScene" uid="uid://4xpo5blmae5w" path="res://Items/Weapons/TestPistol/Models/TestPistol_rigged.glb" id="2_2akhh"]
 
 [resource]
 script = ExtResource("1_sxmek")
@@ -10,12 +11,13 @@ Type = 1
 Damage = 2
 Range = 100.0
 ReloadTime = 2.0
+MeshScene = ExtResource("2_2akhh")
 ImpactParticles = ExtResource("1_ev0nn")
-FiringAnimations = PackedStringArray()
-ReloadAnimations = PackedStringArray()
+FiringAnimations = PackedStringArray("PistolPew")
+ReloadAnimations = PackedStringArray("ReloadSpaz")
 SecondaryAnimations = PackedStringArray()
 SpreadInDegrees = 15.0
 BulletsPerShot = 1
-BulletsPerMagazine = 8
+BulletsPerMagazine = 2
 CooldownPerShot = 0.1
 ForceOnImpact = 0.4

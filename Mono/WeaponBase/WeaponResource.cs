@@ -8,7 +8,6 @@ public partial class WeaponResource : Resource
     [Export(PropertyHint.Enum, "Melee, Automatic, Projectile")] public int Type;
     [Export] public int Damage;
     [Export] public float Range;
-    [Export] public float ReloadTime;
 
     [ExportGroup("Visuals")]
     [Export] public PackedScene MeshScene;

@@ -1,9 +1,6 @@
 using Godot;
 using System;
 using System.ComponentModel;
-using System.Linq.Expressions;
-using Godot.Collections;
-using TooManyCratesPC.Mono.WeaponBase;
 
 public partial class WeaponBase : Node3D
 {
@@ -24,6 +21,9 @@ public partial class WeaponBase : Node3D
     private float _aimSpreadFactor;
 
     private PackedScene? _impactParticleScene;
+    
+    // Tracking variables
+    private bool _reloading = false;
 
     public override void _Ready()
     {
@@ -33,7 +33,11 @@ public partial class WeaponBase : Node3D
     public void SwapWeapon()
     {
         // Stop old things
-        animationPlayer?.Stop();
+        if (animationPlayer != null)
+        {
+            animationPlayer.AnimationFinished -= AnimationPlayerOnAnimationFinished;
+            animationPlayer?.Stop();
+        }
         modelNode?.QueueFree();
         CooldownTimer.Stop();
         ReloadTimer.Stop();
@@ -42,7 +46,6 @@ public partial class WeaponBase : Node3D
         // Init and load new things
         AudioStreamPlayer.Stream = WeaponDescriptor.FiringSounds;
         CooldownTimer.WaitTime = WeaponDescriptor.CooldownPerShot;
-        ReloadTimer.WaitTime = WeaponDescriptor.ReloadTime;
         RayCast3D.TargetPosition = new Vector3(0, 0, -WeaponDescriptor.Range);
         _impactParticleScene = WeaponDescriptor.ImpactParticles;
         
@@ -52,6 +55,8 @@ public partial class WeaponBase : Node3D
         
         // Find the animationplayer for the new model
         animationPlayer = modelNode.GetChild<AnimationPlayer>(1);
+        // Connect animation player to reload check
+        animationPlayer.AnimationFinished += AnimationPlayerOnAnimationFinished;
         
         // Find and set mesh to be on the Viewmodel layer (2)
         weaponMesh = modelNode.GetChild(0).GetChild<MeshInstance3D>(0);
@@ -74,12 +79,31 @@ public partial class WeaponBase : Node3D
                     FireRaycast();
                     CooldownTimer.Start(WeaponDescriptor.CooldownPerShot);
                     break;
+                
                 case 1: //Automatic
+                    if (_bulletsInMagazine > 0 && _reloading == false) // if we have ammo and we are NOT reloading
+                    {
+                        if (animationPlayer.IsPlaying())
+                        {
+                            animationPlayer.Stop();
+                        }
+                        animationPlayer.Play(WeaponDescriptor.FiringAnimations[rng.RandiRange(0, WeaponDescriptor.FiringAnimations.Length - 1)]);
+                        AudioStreamPlayer.Play();
+                        FireRaycast();
+                        CooldownTimer.Start(WeaponDescriptor.CooldownPerShot);
+                        GD.Print(_bulletsInMagazine);
+                        _bulletsInMagazine--;
+                        break;
+                    }
+                    
+                    if(_bulletsInMagazine <= 0) Reload();
+                    
                     break;
                     
                 
                 default:
-                    throw new WarningException("Unable to determine weapon type.");
+                    GD.PrintErr("Weapon type not recognized.");
+                    break;
             }
         }
     }
@@ -87,6 +111,27 @@ public partial class WeaponBase : Node3D
     private void SecondaryAction()
     {
         throw new NotImplementedException("SecondaryAction ain't there yet mate.");
+    }
+
+    private void Reload()
+    {
+        if (WeaponDescriptor.Type != 0) //Not a melee weapon
+        {
+            animationPlayer.Play(
+                WeaponDescriptor.ReloadAnimations[rng.RandiRange(0, WeaponDescriptor.ReloadAnimations.Length - 1)]);
+            _reloading = true;
+        }
+    }
+    
+    private void AnimationPlayerOnAnimationFinished(StringName animname)
+    {
+        // Basically a "reload check"
+        if (animname.ToString().ToLower().Contains("reload"))
+        {
+            _bulletsInMagazine = WeaponDescriptor.BulletsPerMagazine;
+            GD.Print("Reload finished.");
+            _reloading = false;
+        }
     }
 
     private void FireRaycast()
@@ -175,8 +220,27 @@ public partial class WeaponBase : Node3D
         {
             SecondaryAction();
         }
+
+        if (Input.IsActionPressed("Reload") && !_reloading)
+        {
+            Reload();
+        }
+
+        if (Input.IsActionJustPressed("SwapCrowbar") && !_reloading)
+        {
+            WeaponDescriptor = GD.Load<WeaponResource>("res://Items/Weapons/Crowbar/Crowbar_desc.tres");
+            SwapWeapon();
+        }
+
+        if (Input.IsActionJustPressed("SwapPistol") && !_reloading)
+        {
+            WeaponDescriptor = GD.Load<WeaponResource>("res://Items/Weapons/TestPistol/TestPistol_desc.tres");
+            SwapWeapon();
+        }
         
         _aimSpreadFactor = Mathf.MoveToward(_aimSpreadFactor, 0, (float)0.01);
         _aimSpreadFactor = Mathf.Clamp(_aimSpreadFactor, 0, 1);
     }
+    
+    
 }
