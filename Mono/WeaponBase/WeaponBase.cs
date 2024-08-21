@@ -208,6 +208,13 @@ public partial class WeaponBase : Node3D
                     physBody.ApplyTorqueImpulse((RayCast3D.GetCollisionPoint() - physBody.GlobalPosition).Normalized() * 0.5f);
                     physBody.ApplyImpulse((RayCast3D.GetCollisionPoint() - RayCast3D.GlobalPosition).Normalized() * WeaponDescriptor.ForceOnImpact);
                 }
+                
+                // Deal damage if the hit has a Destructable component
+                if (RayCast3D.GetCollider() is Node3D baseNode &&
+                    baseNode.FindChild("Destructable") is Destructable destructable)
+                {
+                    destructable.EmitSignal(Destructable.SignalName.Damage, WeaponDescriptor.Damage);
+                }
             }
 
             _aimSpreadFactor += 0.1f;

@@ -1,7 +1,8 @@
-[gd_scene load_steps=16 format=3 uid="uid://bivxc3041j1qd"]
+[gd_scene load_steps=17 format=3 uid="uid://bivxc3041j1qd"]
 
 [ext_resource type="PackedScene" uid="uid://dmn3mi4c0tk3b" path="res://Mono/PlayerCharacter/PlayerCharacter.tscn" id="1_4ox2p"]
 [ext_resource type="Texture2D" uid="uid://dm3vot2d356on" path="res://Addons/kenney_prototype_textures/dark/texture_02.png" id="1_kuf6r"]
+[ext_resource type="PackedScene" uid="uid://otx5u7r3l3ig" path="res://Items/TestingObjects/Destructable/APrettyCrateDestructable.tscn" id="3_8i48g"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_s1b5k"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -126,3 +127,6 @@ shape = SubResource("ConcavePolygonShape3D_nbwbi")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D2"]
 mesh = SubResource("SphereMesh_igjva")
 skeleton = NodePath("../..")
+
+[node name="APrettyCrateDestructable" parent="." instance=ExtResource("3_8i48g")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.32429, 3.25389, 2.30332)
