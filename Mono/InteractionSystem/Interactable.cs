@@ -1,9 +1,18 @@
 using Godot;
 using System;
 
+[GlobalClass]
 public partial class Interactable : Node
 {
-	[Export] public CollisionObject3D InteractionCollider;
-	
 	[Signal] public delegate void InteractEventHandler();
+
+	public override void _Ready()
+	{
+		Interact += OnInteract;
+	}
+
+	private void OnInteract()
+	{
+		GD.Print("Interacting!");
+	}
 }

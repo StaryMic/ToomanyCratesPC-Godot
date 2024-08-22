@@ -150,9 +150,26 @@ public partial class PlayerCharacter : CharacterBody3D
 				GrabRigidBody(body);
 				GD.Print("Grabbed " + body.Name);
 			}
+
+			if (_rayCast.IsColliding() && _rayCast.GetCollider() is Node3D collision)
+			{
+				Interact(collision);
+			}
 		}
 	}
 
+	private void Interact(Node3D collision)
+	{
+		for (int i = 0; i < collision.GetChildCount(); i++)
+		{
+			if (collision.GetChildOrNull<Interactable>(i) is Interactable interactable)
+			{
+				GD.Print(interactable.Name);
+				interactable.EmitSignal(Interactable.SignalName.Interact);
+			}
+		}
+	}
+	
 	private void GrabRigidBody(RigidBody3D body)
 	{
 		GD.Print("Grabbing");

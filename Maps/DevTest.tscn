@@ -1,8 +1,10 @@
-[gd_scene load_steps=17 format=3 uid="uid://bivxc3041j1qd"]
+[gd_scene load_steps=25 format=3 uid="uid://bivxc3041j1qd"]
 
 [ext_resource type="PackedScene" uid="uid://dmn3mi4c0tk3b" path="res://Mono/PlayerCharacter/PlayerCharacter.tscn" id="1_4ox2p"]
 [ext_resource type="Texture2D" uid="uid://dm3vot2d356on" path="res://Addons/kenney_prototype_textures/dark/texture_02.png" id="1_kuf6r"]
 [ext_resource type="PackedScene" uid="uid://otx5u7r3l3ig" path="res://Items/TestingObjects/Destructable/APrettyCrateDestructable.tscn" id="3_8i48g"]
+[ext_resource type="Script" path="res://Mono/InteractionSystem/Interactable.cs" id="4_7yqec"]
+[ext_resource type="Script" path="res://Mono/InteractionSystem/Act_Anim.cs" id="5_5735b"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_s1b5k"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -49,6 +51,51 @@ data = PackedVector3Array(0, 0.5, 0, 0, 0.5, 0, 0, 0.4915, 0.0919, 0, 0.5, 0, 0.
 [sub_resource type="SphereMesh" id="SphereMesh_igjva"]
 radial_segments = 16
 rings = 16
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_idna4"]
+size = Vector3(0.1, 0.5, 0.5)
+
+[sub_resource type="BoxMesh" id="BoxMesh_on2x4"]
+size = Vector3(0.1, 0.5, 0.5)
+
+[sub_resource type="Animation" id="Animation_ypdp2"]
+resource_name = "Spin"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("MeshInstance3D:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5, 1),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(0, 3.14159, 0), Vector3(0, 6.28319, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_pcshf"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("MeshInstance3D:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_gw7tw"]
+_data = {
+"RESET": SubResource("Animation_pcshf"),
+"Spin": SubResource("Animation_ypdp2")
+}
+
+[sub_resource type="TextMesh" id="TextMesh_caucb"]
+text = "Press button to spin!"
 
 [node name="Map" type="Node3D"]
 
@@ -130,3 +177,35 @@ skeleton = NodePath("../..")
 
 [node name="APrettyCrateDestructable" parent="." instance=ExtResource("3_8i48g")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.32429, 3.25389, 2.30332)
+
+[node name="Area3D" type="Area3D" parent="."]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 3.67784, 2.01786, 3.38324)
+collision_layer = 8
+collision_mask = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+shape = SubResource("BoxShape3D_idna4")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Area3D"]
+mesh = SubResource("BoxMesh_on2x4")
+
+[node name="Interactable" type="Node" parent="Area3D"]
+script = ExtResource("4_7yqec")
+
+[node name="SpinnyTest" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.1548, 0, 2.97049)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="SpinnyTest"]
+libraries = {
+"": SubResource("AnimationLibrary_gw7tw")
+}
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="SpinnyTest"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.33949, 1.99461, 0.45669)
+mesh = SubResource("TextMesh_caucb")
+
+[node name="Act_Anim" type="Node" parent="SpinnyTest" node_paths=PackedStringArray("Interactable", "AnimationPlayer")]
+script = ExtResource("5_5735b")
+Interactable = NodePath("../../Area3D/Interactable")
+AnimationPlayer = NodePath("../AnimationPlayer")
+AnimationName = "Spin"

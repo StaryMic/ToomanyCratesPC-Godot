@@ -10,7 +10,6 @@ WeaponName = &"TestPistol"
 Type = 1
 Damage = 2
 Range = 100.0
-ReloadTime = 2.0
 MeshScene = ExtResource("2_2akhh")
 ImpactParticles = ExtResource("1_ev0nn")
 FiringAnimations = PackedStringArray("PistolPew")

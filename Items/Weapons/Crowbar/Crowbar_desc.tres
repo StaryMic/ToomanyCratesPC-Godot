@@ -37,7 +37,6 @@ WeaponName = &"Crowbar"
 Type = 0
 Damage = 5
 Range = 500.0
-ReloadTime = 0.0
 MeshScene = ExtResource("11_8qf78")
 ImpactParticles = ExtResource("1_dnegr")
 FiringAnimations = PackedStringArray("Swing01")
