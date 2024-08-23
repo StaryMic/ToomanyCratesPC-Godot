@@ -21,7 +21,7 @@ project/assembly_name="TooManyCratesPC"
 
 [editor_plugins]
 
-enabled=PackedStringArray()
+enabled=PackedStringArray("res://addons/func_godot/plugin.cfg")
 
 [importer_defaults]
 

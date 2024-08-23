@@ -6,7 +6,7 @@ public partial class PlayerCharacter : CharacterBody3D
 	public const float Speed = 5.0f;
 	public const float JumpVelocity = 4.5f;
 	public const float SprintSpeed = 7.5f;
-	public const float SlowdownSpeed = 0.2f;
+	public const float SlowdownSpeed = 0.35f;
 	public const float PushForce = 0.75f;
 	public const float ThrowForce = 1.5f;
 
@@ -20,9 +20,14 @@ public partial class PlayerCharacter : CharacterBody3D
 	private RayCast3D _rayCast;
 	private Node3D _grabPoint;
 	private Camera3D _viewmodelCamera;
+	private RayCast3D _crouchCast;
+	private CapsuleShape3D _collisionShape;
 
 	// Tracking active objects
 	public RigidBody3D GrabbedRigidBody;
+	
+	// Simple movement states stuff
+	private bool _isCrouching;
 
 	public override void _Ready()
 	{
@@ -31,6 +36,8 @@ public partial class PlayerCharacter : CharacterBody3D
 		_rayCast = GetNode<RayCast3D>("Camera3D/GrabRaycast");
 		_grabPoint = GetNode<Node3D>("Camera3D/GrabPoint");
 		_viewmodelCamera = GetNode<Camera3D>("Camera3D/SubViewportContainer/SubViewport/Camera3D");
+		_crouchCast = GetNode<RayCast3D>("CrouchCast");
+		_collisionShape = GetNode<CollisionShape3D>("CollisionShape3D").Shape as CapsuleShape3D;
 	}
 
 	public override void _Process(double delta)
@@ -53,6 +60,19 @@ public partial class PlayerCharacter : CharacterBody3D
 		// Handle Jump.
 		if (Input.IsActionPressed("Jump") && IsOnFloor())
 			velocity.Y = JumpVelocity;
+		
+		// Handle crouching
+		if (_isCrouching && _collisionShape.Height > 1.4f)
+		{
+			_collisionShape.Height = 1.4f;
+			_camera.Position = new Vector3(0, 1.4f, 0);
+		}
+
+		if (!_isCrouching && !_crouchCast.IsColliding() && _collisionShape.Height <= 1.4f)
+		{
+			_collisionShape.Height = 2;
+			_camera.Position = new Vector3(0, 1.8f, 0);
+		}
 
 		// Get the input direction and handle the movement/deceleration.
 		// As good practice, you should replace UI actions with custom gameplay actions.
@@ -155,6 +175,16 @@ public partial class PlayerCharacter : CharacterBody3D
 			{
 				Interact(collision);
 			}
+		}
+
+		if (Input.IsActionJustPressed("Crouch"))
+		{
+			_isCrouching = true;
+		}
+
+		if (Input.IsActionJustReleased("Crouch"))
+		{
+			_isCrouching = false;
 		}
 	}
 

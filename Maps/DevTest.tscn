@@ -1,10 +1,15 @@
-[gd_scene load_steps=25 format=3 uid="uid://bivxc3041j1qd"]
+[gd_scene load_steps=32 format=3 uid="uid://bivxc3041j1qd"]
 
 [ext_resource type="PackedScene" uid="uid://dmn3mi4c0tk3b" path="res://Mono/PlayerCharacter/PlayerCharacter.tscn" id="1_4ox2p"]
-[ext_resource type="Texture2D" uid="uid://dm3vot2d356on" path="res://Addons/kenney_prototype_textures/dark/texture_02.png" id="1_kuf6r"]
+[ext_resource type="Texture2D" uid="uid://dm3vot2d356on" path="res://addons/kenney_prototype_textures/dark/texture_02.png" id="1_kuf6r"]
 [ext_resource type="PackedScene" uid="uid://otx5u7r3l3ig" path="res://Items/TestingObjects/Destructable/APrettyCrateDestructable.tscn" id="3_8i48g"]
+[ext_resource type="Script" path="res://Mono/DestructableComponent/Destructable.cs" id="3_js0ug"]
 [ext_resource type="Script" path="res://Mono/InteractionSystem/Interactable.cs" id="4_7yqec"]
+[ext_resource type="AudioStream" uid="uid://38ikq6h0efn0" path="res://Sounds/Pains/testpain01.wav" id="4_kp5sd"]
+[ext_resource type="AudioStream" uid="uid://b1qgok0owcbfl" path="res://Sounds/Pains/testpain02.wav" id="5_7h7rd"]
 [ext_resource type="Script" path="res://Mono/InteractionSystem/Act_Anim.cs" id="5_5735b"]
+[ext_resource type="AudioStream" uid="uid://bi23c0mxnun05" path="res://Sounds/Pains/testpain03.wav" id="6_uc7qm"]
+[ext_resource type="AudioStream" uid="uid://dn358741nqvm1" path="res://Sounds/Pains/testpain04.wav" id="7_i62t2"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_s1b5k"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -41,6 +46,15 @@ bounce = 0.09
 
 [sub_resource type="BoxMesh" id="BoxMesh_k1u6m"]
 
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_ruc7b"]
+streams_count = 4
+stream_0/stream = ExtResource("4_kp5sd")
+stream_1/stream = ExtResource("5_7h7rd")
+stream_2/stream = ExtResource("6_uc7qm")
+stream_3/stream = ExtResource("7_i62t2")
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_ipni1"]
+
 [sub_resource type="BoxMesh" id="BoxMesh_q7wso"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ugraf"]
@@ -58,21 +72,6 @@ size = Vector3(0.1, 0.5, 0.5)
 [sub_resource type="BoxMesh" id="BoxMesh_on2x4"]
 size = Vector3(0.1, 0.5, 0.5)
 
-[sub_resource type="Animation" id="Animation_ypdp2"]
-resource_name = "Spin"
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("MeshInstance3D:rotation")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.5, 1),
-"transitions": PackedFloat32Array(1, 1, 1),
-"update": 0,
-"values": [Vector3(0, 0, 0), Vector3(0, 3.14159, 0), Vector3(0, 6.28319, 0)]
-}
-
 [sub_resource type="Animation" id="Animation_pcshf"]
 length = 0.001
 tracks/0/type = "value"
@@ -86,6 +85,21 @@ tracks/0/keys = {
 "transitions": PackedFloat32Array(1),
 "update": 0,
 "values": [Vector3(0, 0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_ypdp2"]
+resource_name = "Spin"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("MeshInstance3D:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5, 1),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(0, 3.14159, 0), Vector3(0, 6.28319, 0)]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_gw7tw"]
@@ -129,6 +143,13 @@ shape = SubResource("BoxShape3D_q5anb")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="RigidBody3D"]
 mesh = SubResource("BoxMesh_k1u6m")
+
+[node name="Destructable" type="Node3D" parent="RigidBody3D"]
+script = ExtResource("3_js0ug")
+_health = 10
+_maxHealth = 10
+_damageAudioStreams = SubResource("AudioStreamRandomizer_ruc7b")
+_breakAudioStreams = SubResource("AudioStreamRandomizer_ipni1")
 
 [node name="RigidBody3D2" type="RigidBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.52349, 1.1857, 2.99307)

@@ -53,7 +53,7 @@ public partial class Destructable : Node3D
 			this.GetParent().QueueFree();
 		}
 		
-		if (_damageAudioStreams != null && this.GetParent().IsQueuedForDeletion())
+		if (_damageAudioStreams != null && !this.GetParent().IsQueuedForDeletion())
 		{
 			ImpactAudioPlayer3D impactAudioPlayer3D = new ImpactAudioPlayer3D();
 			// Select a random damage sound
