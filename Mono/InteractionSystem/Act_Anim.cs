@@ -1,5 +1,4 @@
 using Godot;
-using System;
 
 [GlobalClass]
 public partial class Act_Anim : Node
@@ -24,6 +23,7 @@ public partial class Act_Anim : Node
 		{
 			Interactable.Interact += InteractableOnInteract;
 		}
+		
 	}
 
 	private void InteractableOnInteract()
@@ -32,5 +32,10 @@ public partial class Act_Anim : Node
 		{
 			AnimationPlayer.Play(AnimationName);
 		}
+	}
+
+	public override void _Process(double delta)
+	{
+		DebugDraw3D.DrawLine(this.GetParent<Node3D>().GlobalPosition, Interactable.GetParent<Node3D>().GlobalPosition);
 	}
 }

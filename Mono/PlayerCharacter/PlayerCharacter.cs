@@ -78,15 +78,20 @@ public partial class PlayerCharacter : CharacterBody3D
 		// As good practice, you should replace UI actions with custom gameplay actions.
 		Vector2 inputDir = Input.GetVector("MoveLeft", "MoveRight", "MoveForward", "MoveBackward");
 		Vector3 direction = (Transform.Basis * new Vector3(inputDir.X, 0, inputDir.Y)).Normalized();
-		if (direction != Vector3.Zero && !Input.IsActionPressed("Sprint"))
+		if (direction != Vector3.Zero && !_isCrouching)
 		{
 			velocity.Z = direction.Z * Speed;
 			velocity.X = direction.X * Speed;
 		} 
-		if (direction != Vector3.Zero && Input.IsActionPressed("Sprint"))
+		if (direction != Vector3.Zero && Input.IsActionPressed("Sprint") && !_isCrouching)
 		{
 			velocity.X = direction.X * SprintSpeed;
 			velocity.Z = direction.Z * SprintSpeed;
+		}
+		if (direction != Vector3.Zero && _isCrouching)
+		{
+			velocity.X = direction.X * (Speed * .5f);
+			velocity.Z = direction.Z * (Speed * .5f);
 		}
 		if (direction == Vector3.Zero)
 		{
@@ -123,6 +128,18 @@ public partial class PlayerCharacter : CharacterBody3D
 					{
 						DropRigidBody();
 					}
+				}
+			}
+			
+			// also make sure the prop isn't behind the player
+			if (GrabbedRigidBody != null)
+			{
+				Vector3 VectorBetweenPlayerAndObject =
+					(GrabbedRigidBody.GlobalPosition - this.GlobalPosition); //* new Vector3(1, 0, 1);
+				GD.Print(VectorBetweenPlayerAndObject.Normalized().Dot(-this.GlobalBasis.Z));
+				if (VectorBetweenPlayerAndObject.Normalized().Dot(-this.GlobalBasis.Z) < -0.3f)
+				{
+					DropRigidBody();
 				}
 			}
 		}
@@ -203,12 +220,14 @@ public partial class PlayerCharacter : CharacterBody3D
 	private void GrabRigidBody(RigidBody3D body)
 	{
 		GD.Print("Grabbing");
+		this.AddCollisionExceptionWith(body);
 		GrabbedRigidBody = body;
 	}
 
 	private void DropRigidBody()
 	{
 		GD.Print("Dropping");
+		this.RemoveCollisionExceptionWith(GrabbedRigidBody);
 		GrabbedRigidBody = null;
 	}
 

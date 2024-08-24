@@ -161,8 +161,6 @@ public partial class WeaponBase : Node3D
             
             if (RayCast3D.IsColliding())
             {
-                // TODO: Deal damage to anything with the damageable component
-                
                 // Spawn impact particles
                 if (_impactParticleScene != null)
                 {
@@ -176,10 +174,11 @@ public partial class WeaponBase : Node3D
                     // https://kidscancode.org/godot_recipes/3.x/3d/3d_align_surface/index.html
                     // This saved my ass ^^^
                     Vector3 basisY = RayCast3D.GetCollisionNormal();
-                    Vector3 basisX = -impactGpuParticles.GlobalTransform.Basis.X.Cross(RayCast3D.GetCollisionNormal());
-                    Vector3 basisZ = impactGpuParticles.GlobalTransform.Basis.Z;
+                    Vector3 basisX = -impactGpuParticles.Transform.Basis.Z.Cross(RayCast3D.GetCollisionNormal());
+                    Vector3 basisZ = impactGpuParticles.Transform.Basis.Z;
                     impactGpuParticles.Basis = new Basis(basisX,basisY,basisZ).Orthonormalized();
                     GD.Print(impactGpuParticles.Basis);
+                    GD.Print(impactGpuParticles.GlobalPosition);
                 }
                 else
                 {
