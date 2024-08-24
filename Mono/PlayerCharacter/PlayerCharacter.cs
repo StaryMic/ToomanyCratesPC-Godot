@@ -20,7 +20,7 @@ public partial class PlayerCharacter : CharacterBody3D
 	private RayCast3D _rayCast;
 	private Node3D _grabPoint;
 	private Camera3D _viewmodelCamera;
-	private RayCast3D _crouchCast;
+	private ShapeCast3D _crouchCast;
 	private CapsuleShape3D _collisionShape;
 
 	// Tracking active objects
@@ -36,7 +36,7 @@ public partial class PlayerCharacter : CharacterBody3D
 		_rayCast = GetNode<RayCast3D>("Camera3D/GrabRaycast");
 		_grabPoint = GetNode<Node3D>("Camera3D/GrabPoint");
 		_viewmodelCamera = GetNode<Camera3D>("Camera3D/SubViewportContainer/SubViewport/Camera3D");
-		_crouchCast = GetNode<RayCast3D>("CrouchCast");
+		_crouchCast = GetNode<ShapeCast3D>("CrouchCast");
 		_collisionShape = GetNode<CollisionShape3D>("CollisionShape3D").Shape as CapsuleShape3D;
 	}
 
@@ -62,15 +62,16 @@ public partial class PlayerCharacter : CharacterBody3D
 			velocity.Y = JumpVelocity;
 		
 		// Handle crouching
-		if (_isCrouching && _collisionShape.Height > 1.4f)
+		if (_isCrouching && _collisionShape.Height > 1f)
 		{
-			_collisionShape.Height = 1.4f;
-			_camera.Position = new Vector3(0, 1.4f, 0);
+			_collisionShape.Height = 1f;
+			_camera.Position = new Vector3(0, 1.15f, 0);
 		}
 
-		if (!_isCrouching && !_crouchCast.IsColliding() && _collisionShape.Height <= 1.4f)
+		if (!_isCrouching && !_crouchCast.IsColliding() && _collisionShape.Height < 2f)
 		{
 			_collisionShape.Height = 2;
+			GlobalPosition = new Vector3(GlobalPosition.X, GlobalPosition.Y + 0.2f, GlobalPosition.Z);
 			_camera.Position = new Vector3(0, 1.8f, 0);
 		}
 
@@ -83,26 +84,26 @@ public partial class PlayerCharacter : CharacterBody3D
 			velocity.Z = direction.Z * Speed;
 			velocity.X = direction.X * Speed;
 		} 
-		if (direction != Vector3.Zero && Input.IsActionPressed("Sprint") && !_isCrouching)
+		if (direction != Vector3.Zero && Input.IsActionPressed("Sprint") && _collisionShape.Height > 1.5f)
 		{
 			velocity.X = direction.X * SprintSpeed;
 			velocity.Z = direction.Z * SprintSpeed;
 		}
-		if (direction != Vector3.Zero && _isCrouching)
+		if (direction != Vector3.Zero && _collisionShape.Height <= 1f) // Crouched movement
 		{
 			velocity.X = direction.X * (Speed * .5f);
 			velocity.Z = direction.Z * (Speed * .5f);
 		}
 		if (direction == Vector3.Zero)
 		{
+			if(!IsOnFloor()) velocity = velocity.MoveToward(new Vector3(0, velocity.Y, 0), SlowdownSpeed * 0.25f);
 			// velocity.X = Mathf.MoveToward(Velocity.X, 0, SlowdownSpeed);
 			// velocity.Z = Mathf.MoveToward(Velocity.Z, 0, SlowdownSpeed);
 			
 			// Vector3 tempVelocity = velocity.MoveToward(Vector3.Zero, 0.2f);
 			// tempVelocity.Y = velocity.Y;
 			// velocity = tempVelocity;
-			
-			velocity = velocity.MoveToward(new Vector3(0, velocity.Y, 0), SlowdownSpeed);
+			if(IsOnFloor()) velocity = velocity.MoveToward(new Vector3(0, velocity.Y, 0), SlowdownSpeed);
 			
 		}
 

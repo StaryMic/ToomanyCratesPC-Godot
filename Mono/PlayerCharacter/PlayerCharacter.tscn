@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://dmn3mi4c0tk3b"]
+[gd_scene load_steps=7 format=3 uid="uid://dmn3mi4c0tk3b"]
 
 [ext_resource type="Script" path="res://Mono/PlayerCharacter/PlayerCharacter.cs" id="1_83cae"]
 [ext_resource type="PackedScene" uid="uid://dlrav2fek8i38" path="res://Items/Weapons/Weapon.tscn" id="2_qg52t"]
@@ -6,6 +6,9 @@
 [ext_resource type="Texture2D" uid="uid://8lkjeehlgtvx" path="res://Mono/PlayerCharacter/UI/Circle.svg" id="3_yk1sf"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_xpsck"]
+radius = 0.35
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_ign3p"]
 radius = 0.35
 
 [node name="PlayerCharacter" type="CharacterBody3D"]
@@ -91,7 +94,8 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 texture = ExtResource("3_yk1sf")
 
-[node name="CrouchCast" type="RayCast3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 0)
+[node name="CrouchCast" type="ShapeCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("SphereShape3D_ign3p")
 target_position = Vector3(0, 1.2, 0)
 collision_mask = 13
