@@ -60,6 +60,8 @@ public partial class WeaponBase : Node3D
         // Find and set mesh to be on the Viewmodel layer (2)
         weaponMesh = modelNode.GetChild(0).GetChild<MeshInstance3D>(0);
         weaponMesh.Layers = 2;
+        
+        // TODO: Load previous ammo value for each weapon.
     }
 
     private void PrimaryAction()
