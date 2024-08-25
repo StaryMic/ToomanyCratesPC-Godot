@@ -29,7 +29,7 @@ public partial class PlayerCharacter : CharacterBody3D
 	private Camera3D _viewmodelCamera;
 	private ShapeCast3D _crouchCast;
 	private CapsuleShape3D _collisionShape;
-	private SpotLight3D _flashlight;
+	private Flashlight _flashlight;
 
 	// Tracking active objects
 	public RigidBody3D GrabbedRigidBody;
@@ -47,7 +47,7 @@ public partial class PlayerCharacter : CharacterBody3D
 		_viewmodelCamera = GetNode<Camera3D>("Camera3D/SubViewportContainer/SubViewport/Camera3D");
 		_crouchCast = GetNode<ShapeCast3D>("CrouchCast");
 		_collisionShape = GetNode<CollisionShape3D>("CollisionShape3D").Shape as CapsuleShape3D;
-		_flashlight = GetNode<SpotLight3D>("Camera3D/SpotLight3D");
+		_flashlight = GetNode<Flashlight>("Camera3D/SpotLight3D");
 	}
 
 	public override void _Process(double delta)
@@ -227,7 +227,10 @@ public partial class PlayerCharacter : CharacterBody3D
 			_crouch();
 		}
 
-		if (Input.IsActionJustPressed("Flashlight")) _flashlight.Visible = !_flashlight.Visible;
+		if (Input.IsActionJustPressed("Flashlight"))
+		{
+			_flashlight.ToggleFlashlight();
+		}
 	}
 
 	private void Interact(Node3D collision)
