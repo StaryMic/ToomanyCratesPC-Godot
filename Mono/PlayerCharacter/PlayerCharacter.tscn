@@ -1,9 +1,10 @@
-[gd_scene load_steps=7 format=3 uid="uid://dmn3mi4c0tk3b"]
+[gd_scene load_steps=8 format=3 uid="uid://dmn3mi4c0tk3b"]
 
 [ext_resource type="Script" path="res://Mono/PlayerCharacter/PlayerCharacter.cs" id="1_83cae"]
 [ext_resource type="PackedScene" uid="uid://dlrav2fek8i38" path="res://Items/Weapons/Weapon.tscn" id="2_qg52t"]
 [ext_resource type="Resource" uid="uid://cgmbq7y2enylt" path="res://Items/Weapons/Crowbar/Crowbar_desc.tres" id="3_pyc31"]
 [ext_resource type="Texture2D" uid="uid://8lkjeehlgtvx" path="res://Mono/PlayerCharacter/UI/Circle.svg" id="3_yk1sf"]
+[ext_resource type="Texture2D" uid="uid://4wx0bryvre6f" path="res://Mono/PlayerCharacter/flashlightProjection.png" id="4_unb12"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_xpsck"]
 radius = 0.35
@@ -70,6 +71,17 @@ render_target_update_mode = 4
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8, 0)
 cull_mask = 2
 fov = 90.0
+
+[node name="SpotLight3D" type="SpotLight3D" parent="Camera3D"]
+visible = false
+light_energy = 10.0
+light_projector = ExtResource("4_unb12")
+light_size = 0.064
+light_bake_mode = 0
+shadow_enabled = true
+shadow_opacity = 0.7
+spot_range = 25.0
+spot_attenuation = 2.0
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 follow_viewport_enabled = true
