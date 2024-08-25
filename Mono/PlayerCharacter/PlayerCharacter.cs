@@ -3,10 +3,17 @@ using System;
 
 public partial class PlayerCharacter : CharacterBody3D
 {
-	public const float Speed = 5.0f;
+	public Vector3 RespawnPoint;
+	
 	public const float JumpVelocity = 4.5f;
+	public const float CrouchJumpVelocity = 2f;
+	
+	public const float Speed = 5.0f;
 	public const float SprintSpeed = 7.5f;
+	public const float CrouchSpeed = 3f;
 	public const float SlowdownSpeed = 0.35f;
+	public const float MaxSpeed = 10f;
+	
 	public const float PushForce = 0.75f;
 	public const float ThrowForce = 1.5f;
 
@@ -22,15 +29,17 @@ public partial class PlayerCharacter : CharacterBody3D
 	private Camera3D _viewmodelCamera;
 	private ShapeCast3D _crouchCast;
 	private CapsuleShape3D _collisionShape;
+	private SpotLight3D _flashlight;
 
 	// Tracking active objects
 	public RigidBody3D GrabbedRigidBody;
 	
 	// Simple movement states stuff
-	private bool _isCrouching;
+	private bool _isCrouched;
 
 	public override void _Ready()
 	{
+		RespawnPoint = GlobalPosition;
 		Input.MouseMode = Input.MouseModeEnum.Captured;
 		_camera = GetNode<Camera3D>("Camera3D");
 		_rayCast = GetNode<RayCast3D>("Camera3D/GrabRaycast");
@@ -38,6 +47,7 @@ public partial class PlayerCharacter : CharacterBody3D
 		_viewmodelCamera = GetNode<Camera3D>("Camera3D/SubViewportContainer/SubViewport/Camera3D");
 		_crouchCast = GetNode<ShapeCast3D>("CrouchCast");
 		_collisionShape = GetNode<CollisionShape3D>("CollisionShape3D").Shape as CapsuleShape3D;
+		_flashlight = GetNode<SpotLight3D>("Camera3D/SpotLight3D");
 	}
 
 	public override void _Process(double delta)
@@ -47,11 +57,18 @@ public partial class PlayerCharacter : CharacterBody3D
 		
 		// Align viewport cam with normal cam.
 		_viewmodelCamera.GlobalTransform = _camera.GlobalTransform;
+
+		if (GlobalPosition.Y < -25)
+		{
+			Velocity = Vector3.Zero;
+			GlobalPosition = RespawnPoint;
+		}
 	}
 
 	public override void _PhysicsProcess(double delta)
 	{
 		Vector3 velocity = Velocity;
+		Vector3 desiredVelocity = Velocity; // Handles flat movement (X,Z). Y is always equal to Velocity.
 
 		// Add the gravity.
 		if (!IsOnFloor())
@@ -59,55 +76,63 @@ public partial class PlayerCharacter : CharacterBody3D
 
 		// Handle Jump.
 		if (Input.IsActionPressed("Jump") && IsOnFloor())
-			velocity.Y = JumpVelocity;
+		{
+			velocity.Y = _isCrouched ? CrouchJumpVelocity : JumpVelocity;
+		}
+			
 		
-		// Handle crouching
-		if (_isCrouching && _collisionShape.Height > 1f)
+		// Handle Uncrouching
+		if (_isCrouched && !Input.IsActionPressed("Crouch"))
 		{
-			_collisionShape.Height = 1f;
-			_camera.Position = new Vector3(0, 1.15f, 0);
+			_tryUncrouch();
 		}
-
-		if (!_isCrouching && !_crouchCast.IsColliding() && _collisionShape.Height < 2f)
-		{
-			_collisionShape.Height = 2;
-			GlobalPosition = new Vector3(GlobalPosition.X, GlobalPosition.Y + 0.2f, GlobalPosition.Z);
-			_camera.Position = new Vector3(0, 1.8f, 0);
-		}
-
+		
 		// Get the input direction and handle the movement/deceleration.
 		// As good practice, you should replace UI actions with custom gameplay actions.
 		Vector2 inputDir = Input.GetVector("MoveLeft", "MoveRight", "MoveForward", "MoveBackward");
 		Vector3 direction = (Transform.Basis * new Vector3(inputDir.X, 0, inputDir.Y)).Normalized();
-		if (direction != Vector3.Zero && !_isCrouching)
+		
+		//Handle movement here
+		if (inputDir != Vector2.Zero)
 		{
-			velocity.Z = direction.Z * Speed;
-			velocity.X = direction.X * Speed;
-		} 
-		if (direction != Vector3.Zero && Input.IsActionPressed("Sprint") && _collisionShape.Height > 1.5f)
-		{
-			velocity.X = direction.X * SprintSpeed;
-			velocity.Z = direction.Z * SprintSpeed;
-		}
-		if (direction != Vector3.Zero && _collisionShape.Height <= 1f) // Crouched movement
-		{
-			velocity.X = direction.X * (Speed * .5f);
-			velocity.Z = direction.Z * (Speed * .5f);
-		}
-		if (direction == Vector3.Zero)
-		{
-			if(!IsOnFloor()) velocity = velocity.MoveToward(new Vector3(0, velocity.Y, 0), SlowdownSpeed * 0.25f);
-			// velocity.X = Mathf.MoveToward(Velocity.X, 0, SlowdownSpeed);
-			// velocity.Z = Mathf.MoveToward(Velocity.Z, 0, SlowdownSpeed);
-			
-			// Vector3 tempVelocity = velocity.MoveToward(Vector3.Zero, 0.2f);
-			// tempVelocity.Y = velocity.Y;
-			// velocity = tempVelocity;
-			if(IsOnFloor()) velocity = velocity.MoveToward(new Vector3(0, velocity.Y, 0), SlowdownSpeed);
-			
-		}
+			if (IsOnFloor())
+			{
+				if (Input.IsActionPressed("Sprint") && !_isCrouched) // Sprinting
+				{
+					desiredVelocity = direction * SprintSpeed;
+				}
+				if (!Input.IsActionPressed("Sprint")) // Not Sprinting
+				{
+					desiredVelocity = direction * Speed;
+				}
 
-		Velocity = velocity;
+				if (_isCrouched)
+				{
+					desiredVelocity = direction * CrouchSpeed;
+				}
+			}
+
+			if (!IsOnFloor())
+			{
+				desiredVelocity += (direction * Speed) * 0.05f;
+			}
+		}
+		
+		// Friction on ground
+		if (IsOnFloor())
+		{
+			desiredVelocity = desiredVelocity.MoveToward(Vector3.Zero, SlowdownSpeed);
+		}
+		
+		// Limit to max speed before applying it.
+		desiredVelocity = desiredVelocity.LimitLength(MaxSpeed);
+		
+		// Keep Y Velocity
+		desiredVelocity.Y = velocity.Y;
+
+		Velocity = velocity.MoveToward(desiredVelocity, 0.5f);
+		
+		
 		
 		// Handle grabbed objects
 		if (GrabbedRigidBody != null)
@@ -165,6 +190,8 @@ public partial class PlayerCharacter : CharacterBody3D
 					(Vector3)GetSlideCollision(i).GetCollider().Get(Node3D.PropertyName.GlobalPosition));
 			}
 		}
+		DebugDraw3D.DrawLine(this.GlobalPosition, this.GlobalPosition + desiredVelocity, Colors.Blue);
+		DebugDraw3D.DrawLine(this.GlobalPosition, this.GlobalPosition + Velocity, Colors.Green);
 	}
 
 	public override void _Input(InputEvent @event)
@@ -197,13 +224,10 @@ public partial class PlayerCharacter : CharacterBody3D
 
 		if (Input.IsActionJustPressed("Crouch"))
 		{
-			_isCrouching = true;
+			_crouch();
 		}
 
-		if (Input.IsActionJustReleased("Crouch"))
-		{
-			_isCrouching = false;
-		}
+		if (Input.IsActionJustPressed("Flashlight")) _flashlight.Visible = !_flashlight.Visible;
 	}
 
 	private void Interact(Node3D collision)
@@ -243,5 +267,24 @@ public partial class PlayerCharacter : CharacterBody3D
 		
 		// Apply a force from the player camera's forward axis
 		body.ApplyImpulse(-_camera.GlobalBasis.Z.Normalized() * ThrowForce);
+	}
+
+	private void _crouch()
+	{
+		_collisionShape.SetHeight(1f);
+		this.GlobalPosition = new Vector3(GlobalPosition.X, GlobalPosition.Y - 0.4f, GlobalPosition.Z);
+		_camera.Position = new Vector3(_camera.Position.X, 1.2f, _camera.Position.Z);
+		_isCrouched = true;
+	}
+
+	private void _tryUncrouch()
+	{
+		if (!_crouchCast.IsColliding())
+		{
+			this.GlobalPosition = new Vector3(GlobalPosition.X, GlobalPosition.Y + 0.4f, GlobalPosition.Z);
+			_collisionShape.SetHeight(2f);
+			_camera.Position = new Vector3(_camera.Position.X, 1.8f, _camera.Position.Z);
+			_isCrouched = false;
+		}
 	}
 }
