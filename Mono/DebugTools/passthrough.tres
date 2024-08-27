@@ -1,0 +1,8 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://bwskp1gs5aeud"]
+
+[resource]
+no_depth_test = true
+shading_mode = 0
+distance_fade_mode = 3
+distance_fade_min_distance = 10.0
+distance_fade_max_distance = 0.0

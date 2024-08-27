@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 
 public partial class WeaponBase : Node3D
@@ -10,6 +11,7 @@ public partial class WeaponBase : Node3D
     [Export] public RayCast3D RayCast3D;
     [Export] public AudioStreamPlayer AudioStreamPlayer;
     [Export] public PlayerCharacter PlayerCharacter;
+    [Export] public ResourcePreloader Preloader;
     
     // Dynamically found items
     private Node3D modelNode;
@@ -24,14 +26,42 @@ public partial class WeaponBase : Node3D
     
     // Tracking variables
     private bool _reloading = false;
+    
+    // Tracking ammo for each weapon
+    private Godot.Collections.Dictionary<StringName, int> _weaponAmmoDictionary = new Godot.Collections.Dictionary<StringName, int>();
 
     public override void _Ready()
     {
-        SwapWeapon();
+        SwapWeapon(GD.Load<WeaponResource>("res://Items/Weapons/Crowbar/Crowbar_desc.tres"));
     }
 
-    public void SwapWeapon()
+    private void _storeAmmoToDict()
     {
+        _weaponAmmoDictionary.TryAdd(WeaponDescriptor.WeaponName, _bulletsInMagazine);
+
+        if (_weaponAmmoDictionary.ContainsKey(WeaponDescriptor.WeaponName))
+        {
+            _weaponAmmoDictionary[WeaponDescriptor.WeaponName] = _bulletsInMagazine;
+        }
+    }
+
+    private void _restoreAmmoFromDict()
+    {
+        if (_weaponAmmoDictionary.TryGetValue(WeaponDescriptor.WeaponName, out var value))
+        {
+            _bulletsInMagazine = value;
+        }
+        else
+        {
+            _bulletsInMagazine = WeaponDescriptor.BulletsPerMagazine;
+        }
+    }
+
+    public void SwapWeapon(WeaponResource weaponToSwap)
+    {
+        // Store ammo in dictionary
+        _storeAmmoToDict();
+        
         // Stop old things
         if (animationPlayer != null)
         {
@@ -41,6 +71,12 @@ public partial class WeaponBase : Node3D
         modelNode?.QueueFree();
         CooldownTimer.Stop();
         AudioStreamPlayer.Stop();
+        
+        // Swap weapon descriptor.
+        WeaponDescriptor = weaponToSwap;
+        
+        // Load ammo count from dictionary.
+        _restoreAmmoFromDict();
         
         // Init and load new things
         AudioStreamPlayer.Stream = WeaponDescriptor.FiringSounds;
@@ -60,8 +96,6 @@ public partial class WeaponBase : Node3D
         // Find and set mesh to be on the Viewmodel layer (2)
         weaponMesh = modelNode.GetChild(0).GetChild<MeshInstance3D>(0);
         weaponMesh.Layers = 2;
-        
-        // TODO: Load previous ammo value for each weapon.
     }
 
     private void PrimaryAction()
@@ -241,14 +275,12 @@ public partial class WeaponBase : Node3D
 
         if (Input.IsActionJustPressed("SwapCrowbar") && !_reloading)
         {
-            WeaponDescriptor = GD.Load<WeaponResource>("res://Items/Weapons/Crowbar/Crowbar_desc.tres");
-            SwapWeapon();
+            SwapWeapon(GD.Load<WeaponResource>("res://Items/Weapons/Crowbar/Crowbar_desc.tres"));
         }
 
         if (Input.IsActionJustPressed("SwapPistol") && !_reloading)
         {
-            WeaponDescriptor = GD.Load<WeaponResource>("res://Items/Weapons/TestPistol/TestPistol_desc.tres");
-            SwapWeapon();
+            SwapWeapon(GD.Load<WeaponResource>("res://Items/Weapons/TestPistol/TestPistol_desc.tres"));
         }
         
         _aimSpreadFactor = Mathf.MoveToward(_aimSpreadFactor, 0, (float)0.01);

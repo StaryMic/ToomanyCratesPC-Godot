@@ -6,7 +6,7 @@ public partial class PlayerCharacter : CharacterBody3D
 	public Vector3 RespawnPoint;
 	
 	public const float JumpVelocity = 4.5f;
-	public const float CrouchJumpVelocity = 2f;
+	public const float CrouchJumpVelocity = 3f;
 	
 	public const float Speed = 5.0f;
 	public const float SprintSpeed = 7.5f;
@@ -23,7 +23,7 @@ public partial class PlayerCharacter : CharacterBody3D
 	public float Gravity = ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle();
 	
 	// Get Nodes from scene
-	private Camera3D _camera;
+	public Camera3D Camera;
 	private RayCast3D _rayCast;
 	private Node3D _grabPoint;
 	private Camera3D _viewmodelCamera;
@@ -41,7 +41,7 @@ public partial class PlayerCharacter : CharacterBody3D
 	{
 		RespawnPoint = GlobalPosition;
 		Input.MouseMode = Input.MouseModeEnum.Captured;
-		_camera = GetNode<Camera3D>("Camera3D");
+		Camera = GetNode<Camera3D>("Camera3D");
 		_rayCast = GetNode<RayCast3D>("Camera3D/GrabRaycast");
 		_grabPoint = GetNode<Node3D>("Camera3D/GrabPoint");
 		_viewmodelCamera = GetNode<Camera3D>("Camera3D/SubViewportContainer/SubViewport/Camera3D");
@@ -53,10 +53,10 @@ public partial class PlayerCharacter : CharacterBody3D
 	public override void _Process(double delta)
 	{
 		// Clamp camera
-		_camera.Rotation = new Vector3(Mathf.DegToRad(Mathf.Clamp(_camera.RotationDegrees.X, -85, 85)),0,0);
+		Camera.Rotation = new Vector3(Mathf.DegToRad(Mathf.Clamp(Camera.RotationDegrees.X, -85, 85)),0,0);
 		
 		// Align viewport cam with normal cam.
-		_viewmodelCamera.GlobalTransform = _camera.GlobalTransform;
+		_viewmodelCamera.GlobalTransform = Camera.GlobalTransform;
 
 		if (GlobalPosition.Y < -25)
 		{
@@ -199,7 +199,7 @@ public partial class PlayerCharacter : CharacterBody3D
 		if (@event is InputEventMouseMotion motion)
 		{
 			this.RotateY(-Mathf.DegToRad(motion.Relative.X * MouseSensitivity));
-			_camera.RotateX(-Mathf.DegToRad(motion.Relative.Y * MouseSensitivity));
+			Camera.RotateX(-Mathf.DegToRad(motion.Relative.Y * MouseSensitivity));
 		}
 
 		if (Input.IsActionJustPressed("Use"))
@@ -269,14 +269,14 @@ public partial class PlayerCharacter : CharacterBody3D
 		DropRigidBody();
 		
 		// Apply a force from the player camera's forward axis
-		body.ApplyImpulse(-_camera.GlobalBasis.Z.Normalized() * ThrowForce);
+		body.ApplyImpulse(-Camera.GlobalBasis.Z.Normalized() * ThrowForce);
 	}
 
 	private void _crouch()
 	{
 		_collisionShape.SetHeight(1f);
 		this.GlobalPosition = new Vector3(GlobalPosition.X, GlobalPosition.Y - 0.4f, GlobalPosition.Z);
-		_camera.Position = new Vector3(_camera.Position.X, 1.2f, _camera.Position.Z);
+		Camera.Position = new Vector3(Camera.Position.X, 1.2f, Camera.Position.Z);
 		_isCrouched = true;
 	}
 
@@ -286,7 +286,7 @@ public partial class PlayerCharacter : CharacterBody3D
 		{
 			this.GlobalPosition = new Vector3(GlobalPosition.X, GlobalPosition.Y + 0.4f, GlobalPosition.Z);
 			_collisionShape.SetHeight(2f);
-			_camera.Position = new Vector3(_camera.Position.X, 1.8f, _camera.Position.Z);
+			Camera.Position = new Vector3(Camera.Position.X, 1.8f, Camera.Position.Z);
 			_isCrouched = false;
 		}
 	}

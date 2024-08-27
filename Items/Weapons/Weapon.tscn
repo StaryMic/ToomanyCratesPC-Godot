@@ -1,13 +1,15 @@
-[gd_scene load_steps=3 format=3 uid="uid://dlrav2fek8i38"]
+[gd_scene load_steps=4 format=3 uid="uid://dlrav2fek8i38"]
 
 [ext_resource type="Script" path="res://Mono/WeaponBase/WeaponBase.cs" id="1_6lsp2"]
 [ext_resource type="Resource" uid="uid://bpotvo4us2sb0" path="res://Items/Weapons/TestPistol/TestPistol_desc.tres" id="2_unons"]
+[ext_resource type="Resource" uid="uid://cgmbq7y2enylt" path="res://Items/Weapons/Crowbar/Crowbar_desc.tres" id="3_sx4hd"]
 
-[node name="Weapon" type="Node3D" node_paths=PackedStringArray("CooldownTimer", "AudioStreamPlayer")]
+[node name="Weapon" type="Node3D" node_paths=PackedStringArray("CooldownTimer", "AudioStreamPlayer", "Preloader")]
 script = ExtResource("1_6lsp2")
 WeaponDescriptor = ExtResource("2_unons")
 CooldownTimer = NodePath("CooldownTimer")
 AudioStreamPlayer = NodePath("AudioStreamPlayer")
+Preloader = NodePath("ResourcePreloader")
 
 [node name="CooldownTimer" type="Timer" parent="."]
 process_callback = 0
@@ -17,3 +19,6 @@ one_shot = true
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 max_polyphony = 3
+
+[node name="ResourcePreloader" type="ResourcePreloader" parent="."]
+resources = [PackedStringArray("Crowbar_desc", "TestPistol_desc"), [ExtResource("3_sx4hd"), ExtResource("2_unons")]]
