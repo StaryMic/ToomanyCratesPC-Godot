@@ -6,7 +6,7 @@
 [resource]
 script = ExtResource("2_2kf3t")
 export_file = false
-target_map_editor = 1
+target_map_editor = 2
 fgd_name = "TooManyCrates"
 base_fgd_files = Array[Resource]([])
 entity_definitions = Array[Resource]([ExtResource("1_34uq4")])

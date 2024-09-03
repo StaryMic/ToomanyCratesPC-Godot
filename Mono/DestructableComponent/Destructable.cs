@@ -8,11 +8,19 @@ public partial class Destructable : Node3D
 	[ExportGroup("Health")]
 	[Export] private int _health;
 	[Export] private int _maxHealth; // May go unused
-	
+
 	[ExportGroup("Effects")]
 	[Export] private PackedScene _gibParticlePackedScene;
 	[Export] private AudioStreamRandomizer _damageAudioStreams;
 	[Export] private AudioStreamRandomizer _breakAudioStreams;
+	
+	[ExportGroup("Physics")]
+	[Export] private bool _physicsDamage;
+	[Export] private float _forceBreakThreshold = 2.5f;
+	[Export] private AudioStreamRandomizer _impactAudioStreams;
+	
+	// External references
+	private RigidBody3DPlus _rigidBody3D;
 	
 	// Signals
 	[Signal] public delegate void DamageEventHandler(int damage);
@@ -24,6 +32,30 @@ public partial class Destructable : Node3D
 	public override void _Ready()
 	{
 		Damage += OnDamage;
+
+		if (_physicsDamage)
+		{
+			_rigidBody3D = this.GetParent<RigidBody3DPlus>();
+			_rigidBody3D.BodyShapeEntered += OnCollide;
+		}
+	}
+
+	private void OnCollide(Rid bodyRid, Node body, long bodyShapeIndex, long localShapeIndex)
+	{
+		GD.Print(_rigidBody3D.GetForce());
+		if (_rigidBody3D.GetForce() >= _forceBreakThreshold)
+		{
+			GD.Print("Force over break threshold!");
+			OnDamage(99);
+		}
+
+		if (_rigidBody3D.GetForce() > 0.5f)
+		{
+			// float desiredVolume = MathF.Log(_rigidBody3D.GetForce() / 10);
+			float desiredVolume = Mathf.Min(-15 + (10 * Mathf.Log(_rigidBody3D.GetForce())-10), -10);
+			GD.Print(desiredVolume);
+			PlayAudioStreamAtCurrentPosition(_impactAudioStreams, "Props", desiredVolume);
+		}
 	}
 
 	private void OnDamage(int damage)
@@ -34,12 +66,7 @@ public partial class Destructable : Node3D
 		{
 			if (_breakAudioStreams != null)
 			{
-				// Play breaking audio
-				ImpactAudioPlayer3D breakAudio = new ImpactAudioPlayer3D();
-				breakAudio.Autoplay = true;
-				breakAudio.Stream = _breakAudioStreams;
-				this.GetTree().Root.GetChild(-1).AddChild(breakAudio);
-				breakAudio.GlobalPosition = this.GetParent<Node3D>().GlobalPosition;
+				PlayAudioStreamAtCurrentPosition(_breakAudioStreams);
 			}
 			
 			if(_gibParticlePackedScene != null)
@@ -55,12 +82,19 @@ public partial class Destructable : Node3D
 		
 		if (_damageAudioStreams != null && !this.GetParent().IsQueuedForDeletion())
 		{
-			ImpactAudioPlayer3D impactAudioPlayer3D = new ImpactAudioPlayer3D();
-			// Select a random damage sound
-			impactAudioPlayer3D.Stream = _damageAudioStreams;
-			impactAudioPlayer3D.Autoplay = true;
-			this.GetTree().Root.GetChild(-1).AddChild(impactAudioPlayer3D);
-			impactAudioPlayer3D.GlobalPosition = this.GetParent<Node3D>().GlobalPosition;
+			PlayAudioStreamAtCurrentPosition(_damageAudioStreams);
 		}
+	}
+
+	private void PlayAudioStreamAtCurrentPosition(AudioStream stream, string bus = "Props", float volume = 0)
+	{
+		// Play audio
+		ImpactAudioPlayer3D impactAudioPlayer3D = new ImpactAudioPlayer3D();
+		impactAudioPlayer3D.Autoplay = true;
+		impactAudioPlayer3D.Stream = stream;
+		impactAudioPlayer3D.Bus = bus;
+		impactAudioPlayer3D.SetVolumeDb(volume);
+		this.GetTree().Root.GetChild(-1).AddChild(impactAudioPlayer3D);
+		impactAudioPlayer3D.GlobalPosition = this.GetParent<Node3D>().GlobalPosition;
 	}
 }

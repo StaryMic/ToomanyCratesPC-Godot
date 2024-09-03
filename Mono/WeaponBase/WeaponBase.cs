@@ -86,16 +86,13 @@ public partial class WeaponBase : Node3D
         
         // Spawn the new weapon model
         modelNode = WeaponDescriptor.MeshScene.Instantiate<Node3D>();
+        modelNode.GetChild(0).GetChild<MeshInstance3D>(0).Layers = 2;
         this.AddChild(modelNode);
         
         // Find the animationplayer for the new model
         animationPlayer = modelNode.GetChild<AnimationPlayer>(1);
         // Connect animation player to reload check
         animationPlayer.AnimationFinished += AnimationPlayerOnAnimationFinished;
-        
-        // Find and set mesh to be on the Viewmodel layer (2)
-        weaponMesh = modelNode.GetChild(0).GetChild<MeshInstance3D>(0);
-        weaponMesh.Layers = 2;
     }
 
     private void PrimaryAction()
@@ -227,6 +224,7 @@ public partial class WeaponBase : Node3D
                     ImpactAudioPlayer3D impactPlayer = new ImpactAudioPlayer3D();
                     impactPlayer.Autoplay = true;
                     impactPlayer.Stream = WeaponDescriptor.ImpactSounds;
+                    impactPlayer.Bus = "Weapon";
                     GetTree().Root.GetChild(-1).AddChild(impactPlayer);
                     impactPlayer.GlobalPosition = RayCast3D.GetCollisionPoint();
                     soundsPlayed++;

@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://comhkdfdishrt"]
+
+[ext_resource type="PackedScene" uid="uid://dyhmgsd3w3vjc" path="res://Items/Weapons/Crowbar/Models/Crowbar.glb" id="1_soryn"]
+[ext_resource type="Material" uid="uid://d2rf815imnijx" path="res://Items/Weapons/WeaponFOVMat.tres" id="2_beia2"]
+
+[node name="Crowbar2" instance=ExtResource("1_soryn")]
+
+[node name="Crowbar" parent="Skeleton3D" index="0"]
+layers = 2
+surface_material_override/0 = ExtResource("2_beia2")

@@ -19,6 +19,7 @@ one_shot = true
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 max_polyphony = 3
+bus = &"Weapon"
 
 [node name="ResourcePreloader" type="ResourcePreloader" parent="."]
 resources = [PackedStringArray("Crowbar_desc", "TestPistol_desc"), [ExtResource("3_sx4hd"), ExtResource("2_unons")]]

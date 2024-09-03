@@ -27,6 +27,6 @@ public partial class DevText : MeshInstance3D
 
 	public override void _Process(double delta)
 	{
-		LookAt(_player.Camera.GlobalPosition, Vector3.Up, true);
+		LookAt(_player.CameraAnchor.GlobalPosition, Vector3.Up, true);
 	}
 }

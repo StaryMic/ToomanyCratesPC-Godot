@@ -28,4 +28,4 @@ orm_map_pattern = "%s_orm.%s"
 unshaded = false
 save_generated_materials = false
 uv_unwrap_texel_size = 2.0
-use_trenchbroom_groups_hierarchy = true
+use_trenchbroom_groups_hierarchy = false

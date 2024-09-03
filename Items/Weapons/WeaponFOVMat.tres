@@ -1,0 +1,17 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://d2rf815imnijx"]
+
+[ext_resource type="Shader" path="res://Items/Weapons/viewmodel.gdshader" id="1_20twd"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_20twd")
+shader_parameter/viewmodel_fov = 90.0
+shader_parameter/albedo = Color(1, 1, 1, 1)
+shader_parameter/specular = 1.0
+shader_parameter/metallic = 0.0
+shader_parameter/roughness = 1.0
+shader_parameter/metallic_texture_channel = Vector4(0, 0, 0, 0)
+shader_parameter/roughness_texture_channel = Vector4(1, 0, 0, 0)
+shader_parameter/normal_scale = 0.5
+shader_parameter/uv1_scale = Vector3(1, 1, 1)
+shader_parameter/uv1_offset = Vector3(0, 0, 0)

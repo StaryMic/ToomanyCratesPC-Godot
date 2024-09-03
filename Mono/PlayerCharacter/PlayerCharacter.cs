@@ -23,40 +23,36 @@ public partial class PlayerCharacter : CharacterBody3D
 	public float Gravity = ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle();
 	
 	// Get Nodes from scene
-	public Camera3D Camera;
-	private RayCast3D _rayCast;
-	private Node3D _grabPoint;
-	private Camera3D _viewmodelCamera;
-	private ShapeCast3D _crouchCast;
+	[Export] public Node3D CameraAnchor;
+	[Export] public Camera3D Camera;
+	[Export] private RayCast3D _rayCast;
+	[Export] private Node3D _grabPoint;
+	[Export] private ShapeCast3D _crouchCast; 
 	private CapsuleShape3D _collisionShape;
-	private Flashlight _flashlight;
+	[Export] private Flashlight _flashlight;
 
 	// Tracking active objects
 	public RigidBody3D GrabbedRigidBody;
 	
 	// Simple movement states stuff
 	private bool _isCrouched;
+	private bool _wasAirborne;
+	private float _timeOffGround;
+	
+	// RNG
+	private RandomNumberGenerator _rng = new();
 
 	public override void _Ready()
 	{
 		RespawnPoint = GlobalPosition;
 		Input.MouseMode = Input.MouseModeEnum.Captured;
-		Camera = GetNode<Camera3D>("Camera3D");
-		_rayCast = GetNode<RayCast3D>("Camera3D/GrabRaycast");
-		_grabPoint = GetNode<Node3D>("Camera3D/GrabPoint");
-		_viewmodelCamera = GetNode<Camera3D>("Camera3D/SubViewportContainer/SubViewport/Camera3D");
-		_crouchCast = GetNode<ShapeCast3D>("CrouchCast");
 		_collisionShape = GetNode<CollisionShape3D>("CollisionShape3D").Shape as CapsuleShape3D;
-		_flashlight = GetNode<Flashlight>("Camera3D/SpotLight3D");
 	}
 
 	public override void _Process(double delta)
 	{
 		// Clamp camera
-		Camera.Rotation = new Vector3(Mathf.DegToRad(Mathf.Clamp(Camera.RotationDegrees.X, -85, 85)),0,0);
-		
-		// Align viewport cam with normal cam.
-		_viewmodelCamera.GlobalTransform = Camera.GlobalTransform;
+		CameraAnchor.Rotation = new Vector3(Mathf.DegToRad(Mathf.Clamp(CameraAnchor.RotationDegrees.X, -85, 85)),0,0);
 
 		if (GlobalPosition.Y < -25)
 		{
@@ -79,7 +75,6 @@ public partial class PlayerCharacter : CharacterBody3D
 		{
 			velocity.Y = _isCrouched ? CrouchJumpVelocity : JumpVelocity;
 		}
-			
 		
 		// Handle Uncrouching
 		if (_isCrouched && !Input.IsActionPressed("Crouch"))
@@ -91,6 +86,16 @@ public partial class PlayerCharacter : CharacterBody3D
 		// As good practice, you should replace UI actions with custom gameplay actions.
 		Vector2 inputDir = Input.GetVector("MoveLeft", "MoveRight", "MoveForward", "MoveBackward");
 		Vector3 direction = (Transform.Basis * new Vector3(inputDir.X, 0, inputDir.Y)).Normalized();
+		
+		// Landing Detection
+		if (IsOnFloor() && _wasAirborne)
+		{
+			if (_timeOffGround > 1)
+			{
+				SimpleViewpunch();
+			}
+			_timeOffGround = 0;
+		}
 		
 		//Handle movement here
 		if (inputDir != Vector2.Zero)
@@ -133,7 +138,6 @@ public partial class PlayerCharacter : CharacterBody3D
 		Velocity = velocity.MoveToward(desiredVelocity, 0.5f);
 		
 		
-		
 		// Handle grabbed objects
 		if (GrabbedRigidBody != null)
 		{
@@ -169,8 +173,12 @@ public partial class PlayerCharacter : CharacterBody3D
 				}
 			}
 		}
-
+		_wasAirborne = !IsOnFloor();
 		MoveAndSlide();
+		
+		// Add to airborne timer
+		if(!IsOnFloor()) _timeOffGround += (float)delta;
+		// GD.Print(_timeOffGround);
 
 		// Push phys props out of the way
 		for (int i = 0; i < GetSlideCollisionCount(); i++)
@@ -190,19 +198,32 @@ public partial class PlayerCharacter : CharacterBody3D
 					(Vector3)GetSlideCollision(i).GetCollider().Get(Node3D.PropertyName.GlobalPosition));
 			}
 		}
+		
+		// Move camera rotation back to (0,0,0)
+		if (Camera.Rotation != Vector3.Zero)
+		{
+			Camera.Rotation = Camera.Rotation.MoveToward(Vector3.Zero, 0.025f);
+		}
+		
+		// Debug
 		DebugDraw3D.DrawLine(this.GlobalPosition, this.GlobalPosition + desiredVelocity, Colors.Blue);
 		DebugDraw3D.DrawLine(this.GlobalPosition, this.GlobalPosition + Velocity, Colors.Green);
 	}
 
 	public override void _Input(InputEvent @event)
 	{
+		if (Input.IsActionJustPressed(action: "SimulateViewPunch"))
+		{
+			SimpleViewpunch();
+		}
+		
 		if (@event is InputEventMouseMotion motion)
 		{
-			this.RotateY(-Mathf.DegToRad(motion.Relative.X * MouseSensitivity));
-			Camera.RotateX(-Mathf.DegToRad(motion.Relative.Y * MouseSensitivity));
+			this.RotateY(angle: -Mathf.DegToRad(deg: motion.Relative.X * MouseSensitivity));
+			CameraAnchor.RotateX(angle: -Mathf.DegToRad(deg: motion.Relative.Y * MouseSensitivity));
 		}
 
-		if (Input.IsActionJustPressed("Use"))
+		if (Input.IsActionJustPressed(action: "Use"))
 		{
 			if (GrabbedRigidBody != null)
 			{
@@ -212,25 +233,33 @@ public partial class PlayerCharacter : CharacterBody3D
 			
 			if (_rayCast.IsColliding() && _rayCast.GetCollider() is RigidBody3D body && body.Mass <= 5)
 			{
-				GrabRigidBody(body);
-				GD.Print("Grabbed " + body.Name);
+				GrabRigidBody(body: body);
+				GD.Print(what: "Grabbed " + body.Name);
 			}
 
 			if (_rayCast.IsColliding() && _rayCast.GetCollider() is Node3D collision)
 			{
-				Interact(collision);
+				Interact(collision: collision);
 			}
 		}
 
-		if (Input.IsActionJustPressed("Crouch"))
+		if (Input.IsActionJustPressed(action: "Crouch"))
 		{
 			_crouch();
 		}
 
-		if (Input.IsActionJustPressed("Flashlight"))
+		if (Input.IsActionJustPressed(action: "Flashlight"))
 		{
 			_flashlight.ToggleFlashlight();
 		}
+	}
+
+	public void SimpleViewpunch()
+	{
+		Camera.RotationDegrees += new Vector3(
+			x: _rng.RandfRange(from: -10, to: 10),
+			y: _rng.RandfRange(from: -10, to: 10),
+			z: _rng.RandfRange(from: -10, to: 10));
 	}
 
 	private void Interact(Node3D collision)
@@ -269,14 +298,14 @@ public partial class PlayerCharacter : CharacterBody3D
 		DropRigidBody();
 		
 		// Apply a force from the player camera's forward axis
-		body.ApplyImpulse(-Camera.GlobalBasis.Z.Normalized() * ThrowForce);
+		body.ApplyImpulse(-CameraAnchor.GlobalBasis.Z.Normalized() * ThrowForce);
 	}
 
 	private void _crouch()
 	{
 		_collisionShape.SetHeight(1f);
 		this.GlobalPosition = new Vector3(GlobalPosition.X, GlobalPosition.Y - 0.4f, GlobalPosition.Z);
-		Camera.Position = new Vector3(Camera.Position.X, 1.2f, Camera.Position.Z);
+		CameraAnchor.Position = new Vector3(CameraAnchor.Position.X, 1.2f, CameraAnchor.Position.Z);
 		_isCrouched = true;
 	}
 
@@ -286,7 +315,7 @@ public partial class PlayerCharacter : CharacterBody3D
 		{
 			this.GlobalPosition = new Vector3(GlobalPosition.X, GlobalPosition.Y + 0.4f, GlobalPosition.Z);
 			_collisionShape.SetHeight(2f);
-			Camera.Position = new Vector3(Camera.Position.X, 1.8f, Camera.Position.Z);
+			CameraAnchor.Position = new Vector3(CameraAnchor.Position.X, 1.8f, CameraAnchor.Position.Z);
 			_isCrouched = false;
 		}
 	}
