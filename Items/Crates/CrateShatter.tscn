@@ -1,0 +1,32 @@
+[gd_scene load_steps=5 format=3 uid="uid://bh78fu6o11480"]
+
+[ext_resource type="PackedScene" uid="uid://b3r4e2pek83pj" path="res://Items/Crates/Gibs/WoodPlank.tscn" id="2_fprnd"]
+[ext_resource type="PackedScene" uid="uid://dawt751fenlt" path="res://Items/Crates/Gibs/WoodSplint.tscn" id="2_kc2dv"]
+[ext_resource type="PackedScene" uid="uid://b4h6d6xfpn8oo" path="res://Items/Crates/Gibs/WoodBoard.tscn" id="2_kfbc5"]
+[ext_resource type="PackedScene" uid="uid://bb8eysebwravm" path="res://Items/Crates/Gibs/WoodCorner.tscn" id="3_belgi"]
+
+[node name="CrateShatter" type="Node3D"]
+
+[node name="WoodPlank" parent="." instance=ExtResource("2_fprnd")]
+transform = Transform3D(-0.12322, 0, -0.992379, 0.486348, 0.871676, -0.0603882, 0.865033, -0.490082, -0.107408, 0.264081, 0.0845713, 0.0780326)
+
+[node name="WoodPlank2" parent="." instance=ExtResource("2_fprnd")]
+transform = Transform3D(-0.12322, 0, -0.992379, 0, 1, 0, 0.992379, 0, -0.12322, 0.264081, 0.0402474, -0.376675)
+
+[node name="WoodPlank3" parent="." instance=ExtResource("2_fprnd")]
+transform = Transform3D(0.0601949, 0, -0.998187, 0, 1, 0, 0.998187, 0, 0.0601949, -0.412378, 0.0402474, -0.376675)
+
+[node name="WoodPlank4" parent="." instance=ExtResource("2_fprnd")]
+transform = Transform3D(-0.12322, 0, -0.992379, 0, 1, 0, 0.992379, 0, -0.12322, -0.375738, 0.0402474, 0.256902)
+
+[node name="WoodSplint" parent="." instance=ExtResource("2_kc2dv")]
+transform = Transform3D(0.908959, -0.40872, -0.0821112, 0.413744, 0.908574, 0.0575295, 0.0510907, -0.0862648, 0.994961, -0.0328617, 0, -0.42166)
+
+[node name="WoodSplint2" parent="." instance=ExtResource("2_kc2dv")]
+transform = Transform3D(0.932941, 0.355566, 0.0565242, -0.357328, 0.933655, 0.0246013, -0.0440267, -0.0431493, 0.998098, -0.0607657, 0, 0.229616)
+
+[node name="WoodCorner" parent="." instance=ExtResource("3_belgi")]
+transform = Transform3D(0.999241, 0.0389633, 0, -0.0389633, 0.999241, 0, 0, 0, 1, 0.09699, 0.596883, 0)
+
+[node name="WoodBoard" parent="." instance=ExtResource("2_kfbc5")]
+transform = Transform3D(-0.0598117, 0.99821, 0, -0.99821, -0.0598117, 0, 0, 0, 1, -0.333843, 0.0579664, -0.096377)

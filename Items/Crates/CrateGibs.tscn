@@ -1,0 +1,47 @@
+[gd_scene load_steps=8 format=3 uid="uid://b0r134teyuy7q"]
+
+[ext_resource type="Script" path="res://Mono/ImpactNodes/ImpactGPUParticles.cs" id="1_2odbm"]
+[ext_resource type="Texture2D" uid="uid://2ahpkxtf85pl" path="res://Models/Crates/Gibs/dust01.png" id="1_rmx1c"]
+
+[sub_resource type="Curve" id="Curve_icam6"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.5, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_2dcvq"]
+curve = SubResource("Curve_icam6")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_xmgvu"]
+particle_flag_rotate_y = true
+emission_shape = 1
+emission_sphere_radius = 0.5
+angle_min = -201.9
+angle_max = 418.1
+direction = Vector3(0, 1, 0)
+spread = 90.0
+initial_velocity_min = 0.75
+initial_velocity_max = 5.0
+scale_min = 0.25
+scale_max = 0.25
+scale_curve = SubResource("CurveTexture_2dcvq")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xfu5h"]
+transparency = 2
+alpha_scissor_threshold = 1.0
+alpha_antialiasing_mode = 0
+albedo_texture = ExtResource("1_rmx1c")
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_dvjfl"]
+material = SubResource("StandardMaterial3D_xfu5h")
+orientation = 2
+
+[node name="GPUParticles3D" type="GPUParticles3D"]
+emitting = false
+amount = 25
+one_shot = true
+explosiveness = 1.0
+randomness = 1.0
+visibility_aabb = AABB(-5.87977, -6.51736, -3.941, 10.308, 9.57848, 10.1095)
+transform_align = 2
+process_material = SubResource("ParticleProcessMaterial_xmgvu")
+draw_pass_1 = SubResource("PlaneMesh_dvjfl")
+script = ExtResource("1_2odbm")

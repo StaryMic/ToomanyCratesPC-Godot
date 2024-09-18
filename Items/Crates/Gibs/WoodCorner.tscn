@@ -1,0 +1,37 @@
+[gd_scene load_steps=7 format=3 uid="uid://bb8eysebwravm"]
+
+[ext_resource type="Script" path="res://Mono/RigidBody3DPlus/RigidBody3DPlus.cs" id="1_w1at1"]
+[ext_resource type="ArrayMesh" uid="uid://bh17f22dwgjft" path="res://Models/Crates/Gibs/WoodCorner.res" id="2_84ad1"]
+[ext_resource type="Script" path="res://Mono/DyingFadeOut/DyingFadeOut.cs" id="3_40j37"]
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_uhevl"]
+points = PackedVector3Array(0.180291, -0.106116, 0.457986, 0.196161, -0.0108966, 0.489736, 0.132693, -0.0108966, 0.489736, 0.196161, -0.0108966, 0.410371, 0.132693, -0.106116, 0.410371, 0.132693, -0.0108966, 0.410371, 0.132693, -0.0902431, 0.489736, 0.196161, -0.106116, 0.410371, 0.196161, -0.0902431, 0.489736, 0.132693, -0.106116, 0.426251, 0.196161, -0.106116, 0.457986)
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_exh76"]
+points = PackedVector3Array(0.180291, -0.217237, -0.478527, 0.196161, -0.0108873, -0.446787, 0.196161, -0.0108873, -0.526137, 0.132693, -0.0108873, -0.446787, 0.132693, -0.12198, -0.526137, 0.132693, -0.169608, -0.446787, 0.196161, -0.169608, -0.526137, 0.196161, -0.217237, -0.446787, 0.132693, -0.0108873, -0.526137, 0.132693, -0.169608, -0.478527, 0.180291, -0.169608, -0.526137, 0.180291, -0.217237, -0.446787, 0.196161, -0.217237, -0.478527)
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_ttmbc"]
+points = PackedVector3Array(-0.12121, 0.0525954, -0.478415, 0.196173, 0.0843415, 0.489538, -0.311742, 0.0843415, 0.489538, 0.132645, -0.010878, 0.489538, 0.196173, 0.0843415, -0.525938, -0.232319, 0.00499503, -0.319641, 0.192182, -0.0101524, -0.5182, -0.248214, 0.00499503, 0.47373, -0.137104, 0.0843415, -0.462508, -0.327637, 0.0525954, 0.219811, 0.192182, -0.0101524, 0.4818, -0.264109, 0.0525954, -0.303834, -0.295847, 0.00499503, 0.315056, 0.132645, -0.010878, -0.525938, -0.0102026, 0.00499503, -0.525938, -0.0735766, 0.0843415, -0.525938, -0.327637, 0.0843415, 0.410201, -0.311742, 0.0525954, 0.489538, -0.295847, 0.00499503, 0.219811, -0.232319, 0.00499503, 0.489538, -0.0894714, 0.00499503, -0.462508, -0.248214, 0.0525954, -0.335548, -0.327637, 0.0843415, 0.457823, -0.248214, 0.00499503, -0.192682, -0.295847, 0.0525954, -0.049915, -0.280003, 0.00499503, 0.378486)
+
+[node name="WoodCorner" type="RigidBody3D"]
+collision_layer = 8
+collision_mask = 9
+script = ExtResource("1_w1at1")
+
+[node name="WoodCorner" type="MeshInstance3D" parent="."]
+mesh = ExtResource("2_84ad1")
+
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="."]
+shape = SubResource("ConvexPolygonShape3D_uhevl")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="."]
+shape = SubResource("ConvexPolygonShape3D_exh76")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("ConvexPolygonShape3D_ttmbc")
+
+[node name="DyingFadeOut" type="Node" parent="." node_paths=PackedStringArray("meshToFade")]
+script = ExtResource("3_40j37")
+_fadeDelay = 5.0
+_fadeTime = 3.0
+meshToFade = NodePath("../WoodCorner")

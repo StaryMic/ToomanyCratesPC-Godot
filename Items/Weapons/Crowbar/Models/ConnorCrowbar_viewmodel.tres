@@ -1,0 +1,23 @@
+[gd_resource type="ShaderMaterial" load_steps=5 format=3 uid="uid://dgbe8gojrttiw"]
+
+[ext_resource type="Shader" path="res://Items/Weapons/viewmodel.gdshader" id="1_pvasf"]
+[ext_resource type="Texture2D" uid="uid://c2loon45f322l" path="res://Items/Weapons/Crowbar/Models/ConnorCrowbar_InterestingCrowbar_BaseColor.png" id="2_2f707"]
+[ext_resource type="Texture2D" uid="uid://kvu5xrr2sdkd" path="res://Items/Weapons/Crowbar/Models/ConnorCrowbar_InterestingCrowbar_Metalness-InterestingCrowbar_Roughness.png" id="3_olicw"]
+[ext_resource type="Texture2D" uid="uid://d055p56sf5ahw" path="res://Items/Weapons/Crowbar/Models/ConnorCrowbar_InterestingCrowbar_Normal.png" id="4_jcl1n"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_pvasf")
+shader_parameter/viewmodel_fov = 90.0
+shader_parameter/albedo = Color(1, 1, 1, 1)
+shader_parameter/specular = 0.5
+shader_parameter/metallic = 1.0
+shader_parameter/roughness = 1.0
+shader_parameter/metallic_texture_channel = Vector4(1, 0, 0, 0)
+shader_parameter/roughness_texture_channel = Vector4(1, 0, 0, 0)
+shader_parameter/normal_scale = 0.5
+shader_parameter/uv1_scale = Vector3(1, 1, 1)
+shader_parameter/uv1_offset = Vector3(0, 0, 0)
+shader_parameter/texture_albedo = ExtResource("2_2f707")
+shader_parameter/texture_metallic = ExtResource("3_olicw")
+shader_parameter/texture_normal = ExtResource("4_jcl1n")

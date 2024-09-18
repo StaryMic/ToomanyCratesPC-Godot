@@ -1,0 +1,68 @@
+[gd_scene load_steps=24 format=3 uid="uid://cygviahqw3ib3"]
+
+[ext_resource type="Script" path="res://Mono/RigidBody3DPlus/RigidBody3DPlus.cs" id="1_gmnvn"]
+[ext_resource type="ArrayMesh" uid="uid://cagqm7ycjb6xp" path="res://Models/Crates/Crate.res" id="2_rnwrd"]
+[ext_resource type="Script" path="res://Mono/DestructableComponent/Destructable.cs" id="3_fnte4"]
+[ext_resource type="AudioStream" uid="uid://38ikq6h0efn0" path="res://Sounds/Pains/testpain01.wav" id="4_mq7x5"]
+[ext_resource type="PackedScene" uid="uid://b0r134teyuy7q" path="res://Items/Crates/CrateGibs.tscn" id="4_w8t40"]
+[ext_resource type="AudioStream" uid="uid://b1qgok0owcbfl" path="res://Sounds/Pains/testpain02.wav" id="5_5qxi8"]
+[ext_resource type="AudioStream" uid="uid://bi23c0mxnun05" path="res://Sounds/Pains/testpain03.wav" id="6_nx5r3"]
+[ext_resource type="AudioStream" uid="uid://dn358741nqvm1" path="res://Sounds/Pains/testpain04.wav" id="7_tew5u"]
+[ext_resource type="AudioStream" uid="uid://clu534m2gsyyo" path="res://Sounds/Placeholders/placeholdercratehit-01.wav" id="8_qrm56"]
+[ext_resource type="AudioStream" uid="uid://30pya740558a" path="res://Sounds/Placeholders/placeholdercratehit-02.wav" id="9_e6erx"]
+[ext_resource type="AudioStream" uid="uid://d1ur60ikmk35" path="res://Sounds/Impacts/Bullets, Impact, Glass, Heavy SND6336 2.wav" id="9_kq2do"]
+[ext_resource type="AudioStream" uid="uid://bx3ya6pm0xaqp" path="res://Sounds/Placeholders/placeholdercratehit-03.wav" id="10_xtfw4"]
+[ext_resource type="AudioStream" uid="uid://t4xm0obgka1f" path="res://Sounds/Placeholders/placeholdercratehit-04.wav" id="11_wpa2b"]
+[ext_resource type="AudioStream" uid="uid://bqkrkqrdr65am" path="res://Sounds/Placeholders/placeholdercratehit-05.wav" id="12_n5hq2"]
+[ext_resource type="PackedScene" uid="uid://bh78fu6o11480" path="res://Items/Crates/CrateShatter.tscn" id="15_4wl8w"]
+[ext_resource type="PackedScene" uid="uid://b4h6d6xfpn8oo" path="res://Items/Crates/Gibs/WoodBoard.tscn" id="16_8vmr3"]
+[ext_resource type="PackedScene" uid="uid://bb8eysebwravm" path="res://Items/Crates/Gibs/WoodCorner.tscn" id="17_u6f06"]
+[ext_resource type="PackedScene" uid="uid://b3r4e2pek83pj" path="res://Items/Crates/Gibs/WoodPlank.tscn" id="18_3ajc6"]
+[ext_resource type="PackedScene" uid="uid://dawt751fenlt" path="res://Items/Crates/Gibs/WoodSplint.tscn" id="19_s1lpe"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_edv7n"]
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_y76tj"]
+streams_count = 4
+stream_0/stream = ExtResource("4_mq7x5")
+stream_1/stream = ExtResource("5_5qxi8")
+stream_2/stream = ExtResource("6_nx5r3")
+stream_3/stream = ExtResource("7_tew5u")
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_5qiql"]
+streams_count = 1
+stream_0/stream = ExtResource("9_kq2do")
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_b0uwp"]
+streams_count = 5
+stream_0/stream = ExtResource("8_qrm56")
+stream_1/stream = ExtResource("9_e6erx")
+stream_2/stream = ExtResource("10_xtfw4")
+stream_3/stream = ExtResource("11_wpa2b")
+stream_4/stream = ExtResource("12_n5hq2")
+
+[node name="Crate" type="RigidBody3D" groups=["Crate", "Serializable"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+collision_mask = 9
+script = ExtResource("1_gmnvn")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = ExtResource("2_rnwrd")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_edv7n")
+
+[node name="Destructable" type="Node3D" parent="."]
+script = ExtResource("3_fnte4")
+_health = 15
+_gibParticlePackedScene = ExtResource("4_w8t40")
+_damageAudioStreams = SubResource("AudioStreamRandomizer_y76tj")
+_breakAudioStreams = SubResource("AudioStreamRandomizer_5qiql")
+_physicsDamage = true
+_forceBreakThreshold = 10.0
+_impactAudioStreams = SubResource("AudioStreamRandomizer_b0uwp")
+_breakScene = ExtResource("15_4wl8w")
+_breakForce = 3.0
+
+[node name="ResourcePreloader" type="ResourcePreloader" parent="."]
+resources = [PackedStringArray("WoodBoard", "WoodCorner", "WoodPlank", "WoodSplint"), [ExtResource("16_8vmr3"), ExtResource("17_u6f06"), ExtResource("18_3ajc6"), ExtResource("19_s1lpe")]]

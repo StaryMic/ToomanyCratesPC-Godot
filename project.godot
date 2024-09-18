@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="TooManyCratesPC"
-run/main_scene="res://Maps/TBImport/ScaleTest.tscn"
+run/main_scene="res://Maps/TBImport/Outside.tscn"
 config/features=PackedStringArray("4.3", "C#", "Forward Plus")
 config/icon="res://icon.svg"
 
@@ -31,6 +31,11 @@ project/assembly_name="TooManyCratesPC"
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/func_godot/plugin.cfg")
+
+[global_group]
+
+Crate="Marks all crates in the level."
+Serializable="Marks objects as having data to be saved."
 
 [importer_defaults]
 
@@ -63,7 +68,7 @@ scene={
 "meshes/light_baking": 1,
 "meshes/lightmap_texel_size": 0.2,
 "nodes/apply_root_scale": true,
-"nodes/import_as_skeleton_bones": true,
+"nodes/import_as_skeleton_bones": false,
 "nodes/root_name": "",
 "nodes/root_scale": 1.0,
 "nodes/root_type": "",
@@ -174,6 +179,8 @@ SimulateViewPunch={
 
 [rendering]
 
+lights_and_shadows/directional_shadow/size=8192
+lights_and_shadows/directional_shadow/soft_shadow_filter_quality=3
 occlusion_culling/use_occlusion_culling=true
 2d/snap/snap_2d_transforms_to_pixel=true
 2d/snap/snap_2d_vertices_to_pixel=true

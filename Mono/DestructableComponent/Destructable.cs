@@ -7,7 +7,6 @@ public partial class Destructable : Node3D
 	// Exported Variables and Scenes
 	[ExportGroup("Health")]
 	[Export] private int _health;
-	[Export] private int _maxHealth; // May go unused
 
 	[ExportGroup("Effects")]
 	[Export] private PackedScene _gibParticlePackedScene;
@@ -18,6 +17,11 @@ public partial class Destructable : Node3D
 	[Export] private bool _physicsDamage;
 	[Export] private float _forceBreakThreshold = 2.5f;
 	[Export] private AudioStreamRandomizer _impactAudioStreams;
+	
+	// Toggles
+	[ExportGroup("Spawns")]
+	[Export] private PackedScene _breakScene;
+	[Export] private float _breakForce = 1f;
 	
 	// External references
 	private RigidBody3DPlus _rigidBody3D;
@@ -43,16 +47,16 @@ public partial class Destructable : Node3D
 	private void OnCollide(Rid bodyRid, Node body, long bodyShapeIndex, long localShapeIndex)
 	{
 		GD.Print(_rigidBody3D.GetForce());
-		if (_rigidBody3D.GetForce() >= _forceBreakThreshold)
+		if (_rigidBody3D.GetForce().Length() >= _forceBreakThreshold)
 		{
 			GD.Print("Force over break threshold!");
 			OnDamage(99);
 		}
 
-		if (_rigidBody3D.GetForce() > 0.5f)
+		if (_rigidBody3D.GetForce().Length() > 0.5f)
 		{
 			// float desiredVolume = MathF.Log(_rigidBody3D.GetForce() / 10);
-			float desiredVolume = Mathf.Min(-15 + (10 * Mathf.Log(_rigidBody3D.GetForce())-10), -10);
+			float desiredVolume = Mathf.Min(-15 + (10 * Mathf.Log(_rigidBody3D.GetForce().Length())-10), -10);
 			GD.Print(desiredVolume);
 			PlayAudioStreamAtCurrentPosition(_impactAudioStreams, "Props", desiredVolume);
 		}
@@ -64,6 +68,12 @@ public partial class Destructable : Node3D
 
 		if (_health <= 0 && !this.GetParent().IsQueuedForDeletion())
 		{
+			if (this.GetParent() is RigidBody3D rigidBody3D)
+			{
+				// Disable collision.
+				rigidBody3D.CollisionMask = 0;
+			}
+			
 			if (_breakAudioStreams != null)
 			{
 				PlayAudioStreamAtCurrentPosition(_breakAudioStreams);
@@ -74,6 +84,23 @@ public partial class Destructable : Node3D
 				ImpactGPUParticles impactGPUParticles = _gibParticlePackedScene.Instantiate<ImpactGPUParticles>();
 				this.GetTree().Root.GetChild(-1).AddChild(impactGPUParticles);
 				impactGPUParticles.GlobalPosition = this.GetParent<Node3D>().GlobalPosition;
+			}
+
+			if (_breakScene != null)
+			{
+				Node3D spawnedScene = _breakScene.Instantiate<Node3D>();
+				this.GetTree().Root.GetChild(-1).AddChild(spawnedScene);
+				spawnedScene.GlobalPosition = this.GlobalPosition;
+
+				for (int i = 0; i < spawnedScene.GetChildCount(); i++)
+				{
+					if (spawnedScene.GetChild(i) is RigidBody3D body)
+					{
+						GD.Print(body.Name);
+						Vector3 pushDirection = (body.GlobalPosition - spawnedScene.GlobalPosition).Normalized() * _breakForce;
+						body.LinearVelocity = pushDirection + _rigidBody3D.LinearVelocity;
+					}
+				}
 			}
 			
 			// Queue deletion

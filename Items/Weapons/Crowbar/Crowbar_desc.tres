@@ -11,7 +11,7 @@
 [ext_resource type="AudioStream" uid="uid://ltm7h2ntu8rb" path="res://Sounds/Impacts/Bullets, Impact, Glass, Heavy SND6336 3.wav" id="9_rd0ls"]
 [ext_resource type="AudioStream" uid="uid://cqmmwuiev3be6" path="res://Sounds/Impacts/Bullets, Impact, Glass, Heavy SND6336 4.wav" id="10_nnq8c"]
 [ext_resource type="AudioStream" uid="uid://boaypwwfufsxf" path="res://Sounds/Impacts/Bullets, Impact, Glass, Heavy SND6336 5.wav" id="11_8i7pf"]
-[ext_resource type="PackedScene" uid="uid://comhkdfdishrt" path="res://Items/Weapons/Crowbar/Crowbar.tscn" id="11_pnbe4"]
+[ext_resource type="PackedScene" uid="uid://b6sgh1rgo31o3" path="res://Items/Weapons/Crowbar/Models/Connor_Crowbar.tscn" id="11_cabtd"]
 
 [sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_fxkoc"]
 random_pitch = 1.19
@@ -37,7 +37,7 @@ WeaponName = &"Crowbar"
 Type = 0
 Damage = 5
 Range = 3.5
-MeshScene = ExtResource("11_pnbe4")
+MeshScene = ExtResource("11_cabtd")
 ImpactParticles = ExtResource("1_dnegr")
 FiringAnimations = PackedStringArray("Swing01")
 ReloadAnimations = PackedStringArray()

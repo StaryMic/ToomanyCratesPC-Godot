@@ -1,0 +1,25 @@
+[gd_scene load_steps=5 format=3 uid="uid://b4h6d6xfpn8oo"]
+
+[ext_resource type="Script" path="res://Mono/RigidBody3DPlus/RigidBody3DPlus.cs" id="1_cluku"]
+[ext_resource type="ArrayMesh" uid="uid://dp081uri3cgql" path="res://Models/Crates/Gibs/WoodBoard.res" id="2_2vpqj"]
+[ext_resource type="Script" path="res://Mono/DyingFadeOut/DyingFadeOut.cs" id="3_b7cqg"]
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_or30p"]
+points = PackedVector3Array(0.323315, 0.0119324, 0.394263, -0.321542, 0.0119324, 0.394263, 0.323315, -0.0119324, 0.394263, 0.323315, 0.0119324, -0.394263, -0.323315, -0.0119324, 0.394263, -0.187165, 0.0119324, -0.394263, -0.209192, -0.0119324, -0.378054, 0.323315, -0.0119324, -0.394263)
+
+[node name="WoodBoard" type="RigidBody3D"]
+collision_layer = 8
+collision_mask = 9
+script = ExtResource("1_cluku")
+
+[node name="WoodBoard" type="MeshInstance3D" parent="."]
+mesh = ExtResource("2_2vpqj")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("ConvexPolygonShape3D_or30p")
+
+[node name="DyingFadeOut" type="Node" parent="." node_paths=PackedStringArray("meshToFade")]
+script = ExtResource("3_b7cqg")
+_fadeDelay = 5.0
+_fadeTime = 3.0
+meshToFade = NodePath("../WoodBoard")

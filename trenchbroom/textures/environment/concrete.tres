@@ -1,0 +1,31 @@
+[gd_resource type="StandardMaterial3D" load_steps=6 format=3 uid="uid://dxox1kwwbija8"]
+
+[ext_resource type="Texture2D" uid="uid://c0hw4u2mnl5oo" path="res://trenchbroom/textures/environment/concrete.png" id="1_psbel"]
+[ext_resource type="Texture2D" uid="uid://lo41oew5ihhh" path="res://trenchbroom/textures/environment/concrete_normal.png" id="2_1r215"]
+
+[sub_resource type="Gradient" id="Gradient_laaer"]
+colors = PackedColorArray(0, 0, 0, 1, 0.408329, 0.408329, 0.408329, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_wbp3h"]
+noise_type = 2
+frequency = 0.058
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_0wtm0"]
+seamless = true
+color_ramp = SubResource("Gradient_laaer")
+noise = SubResource("FastNoiseLite_wbp3h")
+
+[resource]
+albedo_texture = ExtResource("1_psbel")
+normal_enabled = true
+normal_texture = ExtResource("2_1r215")
+heightmap_scale = 16.0
+heightmap_deep_parallax = true
+heightmap_min_layers = 8
+heightmap_max_layers = 32
+heightmap_texture = ExtResource("2_1r215")
+detail_enabled = true
+detail_blend_mode = 3
+detail_uv_layer = 1
+detail_albedo = SubResource("NoiseTexture2D_0wtm0")
+uv2_scale = Vector3(-0.68, -0.68, -0.68)

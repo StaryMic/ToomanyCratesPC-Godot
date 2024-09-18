@@ -205,12 +205,20 @@ public partial class WeaponBase : Node3D
                     
                     // Orient particles to normal vector
                     // https://kidscancode.org/godot_recipes/3.x/3d/3d_align_surface/index.html
-                    // This saved my ass ^^^
-                    Vector3 basisY = RayCast3D.GetCollisionNormal();
-                    Vector3 basisX = -impactGpuParticles.Transform.Basis.Z.Cross(RayCast3D.GetCollisionNormal());
-                    Vector3 basisZ = impactGpuParticles.Transform.Basis.Z;
-                    impactGpuParticles.Basis = new Basis(basisX,basisY,basisZ).Orthonormalized();
-                    GD.Print(impactGpuParticles.Basis);
+                    // This saved my ass ^^^ (Edit: This doesn't work for the Z-Axis)
+                    // Vector3 basisY = RayCast3D.GetCollisionNormal();
+                    // Vector3 basisX = -impactGpuParticles.GlobalTransform.Basis.Z.Cross(RayCast3D.GetCollisionNormal());
+                    // Vector3 basisZ = impactGpuParticles.GlobalTransform.Basis.Z;
+                    // impactGpuParticles.GlobalBasis = new Basis(basisX,basisY,basisZ).Orthonormalized();
+                    
+                    // ChatGPT wrote this. It works!
+                    Vector3 normalizedNormal = RayCast3D.GetCollisionNormal().Normalized();
+                    Vector3 axis = Vector3.Up;
+                    float angle = axis.AngleTo(normalizedNormal);
+                    axis = axis.Cross(normalizedNormal).Normalized();
+                    impactGpuParticles.GlobalBasis = Basis.Identity.Rotated(axis, angle);
+                    
+                    GD.Print(impactGpuParticles.GlobalBasis.Z);
                     GD.Print(impactGpuParticles.GlobalPosition);
                 }
                 else
@@ -225,6 +233,8 @@ public partial class WeaponBase : Node3D
                     impactPlayer.Autoplay = true;
                     impactPlayer.Stream = WeaponDescriptor.ImpactSounds;
                     impactPlayer.Bus = "Weapon";
+                    impactPlayer.AttenuationModel = AudioStreamPlayer3D.AttenuationModelEnum.Logarithmic;
+                    impactPlayer.MaxDistance = 15f;
                     GetTree().Root.GetChild(-1).AddChild(impactPlayer);
                     impactPlayer.GlobalPosition = RayCast3D.GetCollisionPoint();
                     soundsPlayed++;

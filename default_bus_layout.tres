@@ -1,4 +1,13 @@
-[gd_resource type="AudioBusLayout" format=3 uid="uid://cr0ld6ed30nx2"]
+[gd_resource type="AudioBusLayout" load_steps=2 format=3 uid="uid://cr0ld6ed30nx2"]
+
+[sub_resource type="AudioEffectReverb" id="AudioEffectReverb_8y4pt"]
+resource_name = "Reverb"
+predelay_msec = 50.0
+predelay_feedback = 0.16
+room_size = 0.14
+damping = 0.07
+spread = 0.0
+hipass = 0.44
 
 [resource]
 bus/1/name = &"Weapon"
@@ -19,3 +28,11 @@ bus/3/mute = false
 bus/3/bypass_fx = false
 bus/3/volume_db = 0.0
 bus/3/send = &"Master"
+bus/4/name = &"IndoorReverb"
+bus/4/solo = false
+bus/4/mute = false
+bus/4/bypass_fx = false
+bus/4/volume_db = 0.0
+bus/4/send = &"Master"
+bus/4/effect/0/effect = SubResource("AudioEffectReverb_8y4pt")
+bus/4/effect/0/enabled = true

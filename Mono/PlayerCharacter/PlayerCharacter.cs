@@ -137,9 +137,14 @@ public partial class PlayerCharacter : CharacterBody3D
 
 		Velocity = velocity.MoveToward(desiredVelocity, 0.5f);
 		
+		// If we are holding an object, and it is going to be deleted, drop it.
+		if (GrabbedRigidBody != null && GrabbedRigidBody.IsQueuedForDeletion())
+		{
+			DropRigidBody();
+		}
 		
 		// Handle grabbed objects
-		if (GrabbedRigidBody != null)
+		if (GrabbedRigidBody != null && !GrabbedRigidBody.IsQueuedForDeletion())
 		{
 			// Remove gravity so interactions work nicer.
 			Vector3 removeYVelocity = new Vector3(GrabbedRigidBody.LinearVelocity.X, 0, GrabbedRigidBody.LinearVelocity.Z);
@@ -162,7 +167,7 @@ public partial class PlayerCharacter : CharacterBody3D
 			}
 			
 			// also make sure the prop isn't behind the player
-			if (GrabbedRigidBody != null)
+			if (GrabbedRigidBody != null && !GrabbedRigidBody.IsQueuedForDeletion())
 			{
 				Vector3 VectorBetweenPlayerAndObject =
 					(GrabbedRigidBody.GlobalPosition - this.GlobalPosition); //* new Vector3(1, 0, 1);

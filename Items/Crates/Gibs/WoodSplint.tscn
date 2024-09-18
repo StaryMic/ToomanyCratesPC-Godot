@@ -1,0 +1,25 @@
+[gd_scene load_steps=5 format=3 uid="uid://dawt751fenlt"]
+
+[ext_resource type="Script" path="res://Mono/RigidBody3DPlus/RigidBody3DPlus.cs" id="1_dtmc2"]
+[ext_resource type="ArrayMesh" uid="uid://b52kti1t8abhi" path="res://Models/Crates/Gibs/WoodSplint.res" id="2_i5jdy"]
+[ext_resource type="Script" path="res://Mono/DyingFadeOut/DyingFadeOut.cs" id="3_78ufb"]
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_2x5bc"]
+points = PackedVector3Array(-0.115553, -0.465933, -0.0277318, 0.111919, -0.373438, -0.0277318, -0.0997333, -0.466195, -0.0108214, -0.115553, -0.332474, 0.0293482, -0.115553, 0.265908, -0.0277318, 0.111919, -0.252119, 0.0293482, 0.080685, -0.351515, 0.0182194, 0.111919, 0.407402, -0.0277318, 0.114009, 0.419281, 0.0212612, -0.0459606, -0.361909, 0.0475106, -0.115553, 0.261628, 0.0293482, -0.105823, 0.337179, -0.00294803, 0.0790222, 0.405044, -0.0265239, 0.111919, 0.426093, 0.0293482, 0.0764156, 0.385916, 0.0352108, 0.110886, 0.423036, -0.00294803, -0.105014, 0.340149, 0.0108395)
+
+[node name="WoodSplint" type="RigidBody3D"]
+collision_layer = 8
+collision_mask = 9
+script = ExtResource("1_dtmc2")
+
+[node name="WoodSplint" type="MeshInstance3D" parent="."]
+mesh = ExtResource("2_i5jdy")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("ConvexPolygonShape3D_2x5bc")
+
+[node name="DyingFadeOut" type="Node" parent="." node_paths=PackedStringArray("meshToFade")]
+script = ExtResource("3_78ufb")
+_fadeDelay = 5.0
+_fadeTime = 3.0
+meshToFade = NodePath("../WoodSplint")

@@ -3,14 +3,16 @@ using System;
 using System.Numerics;
 using Vector3 = Godot.Vector3;
 [GlobalClass]
+
 public partial class RigidBody3DPlus : RigidBody3D
 {
+    ///<summary>
+    /// Extension method of RigidBody3D.
+    /// Made for aiding physics stuff.
+    ///</summary>
+    
     // Tracked variables
     private Vector3 _prevVelocity;
-    
-    // Setup variables.
-    [Export] private AudioStreamRandomizer _impactAudio;
-    [Export] private AudioStreamRandomizer _breakAudio;
 
     public override void _Ready()
     {
@@ -22,17 +24,17 @@ public partial class RigidBody3DPlus : RigidBody3D
 
     private void OnBodyEntered(Rid bodyRid, Node body, long bodyShapeIndex, long localShapeIndex)
     {
-        GD.Print(GetForce());
+        GD.Print(this.Name + ": " + GetForce().Length());
     }
 
-    public float GetForce()
+    public Vector3 GetForce()
     {
-        return MathF.Abs((_prevVelocity.Length() - LinearVelocity.Length()) * Mass);
+        return ((_prevVelocity - LinearVelocity) * Mass).Abs();
     }
     
     public Vector3 GetVelocityDelta()
     {
-        return (LinearVelocity - _prevVelocity).Abs();
+        return (LinearVelocity - _prevVelocity).Abs() * (float)GetPhysicsProcessDeltaTime();
     }
     public override void _PhysicsProcess(double delta)
     {

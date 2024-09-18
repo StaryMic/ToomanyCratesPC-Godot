@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="SurfacePropertiesRes" load_steps=12 format=3 uid="uid://dwfyhvkyc0vpq"]
+
+[ext_resource type="Script" path="res://Mono/SurfaceProperties/SurfacePropertiesRes.cs" id="1_0y06o"]
+[ext_resource type="PackedScene" uid="uid://bhj8mnjjxi4m2" path="res://Particles/BigSplosion.tscn" id="1_62g7g"]
+[ext_resource type="AudioStream" uid="uid://38ikq6h0efn0" path="res://Sounds/Pains/testpain01.wav" id="2_13hdv"]
+[ext_resource type="AudioStream" uid="uid://b1qgok0owcbfl" path="res://Sounds/Pains/testpain02.wav" id="3_un8fl"]
+[ext_resource type="AudioStream" uid="uid://bi23c0mxnun05" path="res://Sounds/Pains/testpain03.wav" id="4_hmad0"]
+[ext_resource type="AudioStream" uid="uid://dn358741nqvm1" path="res://Sounds/Pains/testpain04.wav" id="5_xra4q"]
+[ext_resource type="AudioStream" uid="uid://bl0ff8o2ptnrr" path="res://Sounds/Placeholders/placeholdercratehit-07.wav" id="6_uq0v5"]
+[ext_resource type="AudioStream" uid="uid://bx3ya6pm0xaqp" path="res://Sounds/Placeholders/placeholdercratehit-03.wav" id="7_5wppe"]
+[ext_resource type="AudioStream" uid="uid://t4xm0obgka1f" path="res://Sounds/Placeholders/placeholdercratehit-04.wav" id="8_k3tn0"]
+[ext_resource type="AudioStream" uid="uid://bqkrkqrdr65am" path="res://Sounds/Placeholders/placeholdercratehit-05.wav" id="9_vcwdq"]
+[ext_resource type="AudioStream" uid="uid://uy2w5md8hwai" path="res://Sounds/Placeholders/placeholdercratehit-06.wav" id="10_2ds73"]
+
+[resource]
+script = ExtResource("1_0y06o")
+StepSounds = Array[AudioStream]([ExtResource("6_uq0v5"), ExtResource("7_5wppe"), ExtResource("8_k3tn0"), ExtResource("9_vcwdq"), ExtResource("10_2ds73")])
+ImpactSounds = Array[AudioStream]([ExtResource("2_13hdv"), ExtResource("3_un8fl"), ExtResource("4_hmad0"), ExtResource("5_xra4q")])
+ImpactParticles = ExtResource("1_62g7g")

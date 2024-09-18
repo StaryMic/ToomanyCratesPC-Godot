@@ -1,3 +1,4 @@
+#nullable enable
 using Godot;
 
 [GlobalClass]
