@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://lo41oew5ihhh" path="res://trenchbroom/textures/environment/concrete_normal.png" id="2_1r215"]
 
 [sub_resource type="Gradient" id="Gradient_laaer"]
-colors = PackedColorArray(0, 0, 0, 1, 0.408329, 0.408329, 0.408329, 1)
+colors = PackedColorArray(0, 0, 0, 1, 0.223103, 0.223103, 0.223103, 1)
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_wbp3h"]
 noise_type = 2
@@ -28,4 +28,5 @@ detail_enabled = true
 detail_blend_mode = 3
 detail_uv_layer = 1
 detail_albedo = SubResource("NoiseTexture2D_0wtm0")
-uv2_scale = Vector3(-0.68, -0.68, -0.68)
+uv2_scale = Vector3(-4.16, -4.16, -4.16)
+texture_filter = 0
