@@ -46,7 +46,7 @@ public partial class Destructable : Node3D
 
 	private void OnCollide(Rid bodyRid, Node body, long bodyShapeIndex, long localShapeIndex)
 	{
-		GD.Print(_rigidBody3D.GetForce());
+		// GD.Print(_rigidBody3D.GetForce());
 		if (_rigidBody3D.GetForce().Length() >= _forceBreakThreshold)
 		{
 			GD.Print("Force over break threshold!");

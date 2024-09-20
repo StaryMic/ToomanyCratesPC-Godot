@@ -15,6 +15,11 @@ run/main_scene="res://Maps/TBImport/Outside.tscn"
 config/features=PackedStringArray("4.3", "C#", "Forward Plus")
 config/icon="res://icon.svg"
 
+[autoload]
+
+SaveSystem="*res://Mono/SaveSystem/SaveSystem.cs"
+LevelManager="*res://Mono/LevelManager/LevelManager.cs"
+
 [debug_draw_3d]
 
 settings/3d/rendering/render_mode=2

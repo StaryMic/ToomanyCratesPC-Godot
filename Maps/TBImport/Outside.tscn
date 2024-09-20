@@ -1,4 +1,4 @@
-[gd_scene load_steps=49 format=4 uid="uid://bxcnx0n3gtdab"]
+[gd_scene load_steps=52 format=4 uid="uid://bxcnx0n3gtdab"]
 
 [ext_resource type="Script" path="res://addons/func_godot/src/map/func_godot_map.gd" id="1_vnfdl"]
 [ext_resource type="Resource" uid="uid://bkhxcqsquw1yg" path="res://addons/func_godot/func_godot_default_map_settings.tres" id="2_ox5ak"]
@@ -11,6 +11,8 @@
 [ext_resource type="Texture2D" uid="uid://dups3q543mi71" path="res://trenchbroom/textures/dev/Orange/DEVORANGE01.jpg" id="8_ngdra"]
 [ext_resource type="Material" uid="uid://6lt3k6essvfq" path="res://trenchbroom/textures/environment/fence.tres" id="9_iwepw"]
 [ext_resource type="PackedScene" uid="uid://cygviahqw3ib3" path="res://Items/Crates/Crate.tscn" id="11_igx78"]
+[ext_resource type="Script" path="res://Mono/InteractionSystem/Interactable.cs" id="12_bpnfg"]
+[ext_resource type="Script" path="res://Mono/InteractionSystem/Act_LevelChange.cs" id="13_hooqp"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_iurmv"]
 albedo_texture = ExtResource("3_6p4ti")
@@ -229,6 +231,8 @@ sdfgi_use_occlusion = true
 fog_density = 0.0392
 volumetric_fog_density = 0.0
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_ubxa8"]
+
 [node name="Outside" type="Node3D"]
 
 [node name="FuncGodotMap" type="Node3D" parent="."]
@@ -368,3 +372,20 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -19.5195, 1.525, 5.55197)
 
 [node name="Crate6" parent="Crates" instance=ExtResource("11_igx78")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -19.0195, 2.525, 5.55197)
+
+[node name="Triggers" type="Node3D" parent="."]
+
+[node name="LevelChange" type="Area3D" parent="Triggers"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.68846, 1.28566, 12.41)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Triggers/LevelChange"]
+shape = SubResource("BoxShape3D_ubxa8")
+
+[node name="Interactable" type="Node" parent="Triggers/LevelChange"]
+script = ExtResource("12_bpnfg")
+
+[node name="LevelChange" type="Node" parent="Triggers/LevelChange" node_paths=PackedStringArray("_interactable")]
+script = ExtResource("13_hooqp")
+_interactable = NodePath("../Interactable")
+_levelToLoad = "res://Maps/TBImport/Outside.tscn"
+_triggerSave = true

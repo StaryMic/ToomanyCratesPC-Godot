@@ -3,13 +3,29 @@ using System;
 
 public partial class SaveSystem : Node
 {
-	// Called when the node enters the scene tree for the first time.
+	// Allow global autoload stuff
+	public static SaveSystem instance { get; set; }
+	
+	// Internal Variables
+	
+	
+	// Node references
+	
+	
+	// Signals
+	
 	public override void _Ready()
 	{
+		instance = this;
+	}
+	
+	public void OnSave()
+	{
+		throw new NotImplementedException();
 	}
 
-	// Called every frame. 'delta' is the elapsed time since the previous frame.
-	public override void _Process(double delta)
+	public void OnLoad()
 	{
+		throw new NotImplementedException();
 	}
 }

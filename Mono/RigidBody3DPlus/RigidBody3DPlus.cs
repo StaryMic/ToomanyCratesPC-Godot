@@ -24,7 +24,7 @@ public partial class RigidBody3DPlus : RigidBody3D
 
     private void OnBodyEntered(Rid bodyRid, Node body, long bodyShapeIndex, long localShapeIndex)
     {
-        GD.Print(this.Name + ": " + GetForce().Length());
+        // GD.Print(this.Name + ": " + GetForce().Length());
     }
 
     public Vector3 GetForce()
