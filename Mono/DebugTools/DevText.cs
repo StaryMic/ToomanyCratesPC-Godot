@@ -15,7 +15,7 @@ public partial class DevText : MeshInstance3D
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
-		_player = (PlayerCharacter)this.GetTree().Root.GetChild(-1).GetNode("PlayerCharacter");
+		_player = (PlayerCharacter)this.GetTree().CurrentScene.GetNode("PlayerCharacter");
 		this.Mesh = new TextMesh();
 		this.Mesh.SurfaceSetMaterial(0,_devMaterial);
 		if (this.Mesh is TextMesh textMesh)
@@ -27,6 +27,9 @@ public partial class DevText : MeshInstance3D
 
 	public override void _Process(double delta)
 	{
-		LookAt(_player.CameraAnchor.GlobalPosition, Vector3.Up, true);
+		if (_player != null)
+		{
+			LookAt(_player.CameraAnchor.GlobalPosition, Vector3.Up, true);
+		}
 	}
 }

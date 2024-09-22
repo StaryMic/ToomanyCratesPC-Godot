@@ -1,0 +1,14 @@
+[gd_scene load_steps=4 format=3 uid="uid://olf4nb5s4t6f"]
+
+[ext_resource type="FontFile" uid="uid://erdgllynwqkw" path="res://examples_dd3d/Roboto-Bold.ttf" id="1_awd6e"]
+[ext_resource type="Material" uid="uid://bwskp1gs5aeud" path="res://Mono/DebugTools/passthrough.tres" id="2_upftw"]
+
+[sub_resource type="TextMesh" id="TextMesh_au285"]
+material = ExtResource("2_upftw")
+text = "DEVTEXT"
+font = ExtResource("1_awd6e")
+pixel_size = 0.05
+depth = 0.0
+
+[node name="DevText" type="MeshInstance3D"]
+mesh = SubResource("TextMesh_au285")

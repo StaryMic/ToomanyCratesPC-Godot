@@ -1,4 +1,4 @@
-[gd_scene load_steps=52 format=4 uid="uid://bxcnx0n3gtdab"]
+[gd_scene load_steps=56 format=4 uid="uid://bxcnx0n3gtdab"]
 
 [ext_resource type="Script" path="res://addons/func_godot/src/map/func_godot_map.gd" id="1_vnfdl"]
 [ext_resource type="Resource" uid="uid://bkhxcqsquw1yg" path="res://addons/func_godot/func_godot_default_map_settings.tres" id="2_ox5ak"]
@@ -13,6 +13,9 @@
 [ext_resource type="PackedScene" uid="uid://cygviahqw3ib3" path="res://Items/Crates/Crate.tscn" id="11_igx78"]
 [ext_resource type="Script" path="res://Mono/InteractionSystem/Interactable.cs" id="12_bpnfg"]
 [ext_resource type="Script" path="res://Mono/InteractionSystem/Act_LevelChange.cs" id="13_hooqp"]
+[ext_resource type="PackedScene" uid="uid://olf4nb5s4t6f" path="res://Mono/DebugTools/DevText.tscn" id="14_6iaav"]
+[ext_resource type="FontFile" uid="uid://erdgllynwqkw" path="res://examples_dd3d/Roboto-Bold.ttf" id="15_lemvb"]
+[ext_resource type="Material" uid="uid://bwskp1gs5aeud" path="res://Mono/DebugTools/passthrough.tres" id="16_mw4yu"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_iurmv"]
 albedo_texture = ExtResource("3_6p4ti")
@@ -233,6 +236,15 @@ volumetric_fog_density = 0.0
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ubxa8"]
 
+[sub_resource type="TextMesh" id="TextMesh_kw7jf"]
+material = ExtResource("16_mw4yu")
+text = "Go to
+MapSwapTest"
+font = ExtResource("15_lemvb")
+font_size = 5
+pixel_size = 0.05
+depth = 0.0
+
 [node name="Outside" type="Node3D"]
 
 [node name="FuncGodotMap" type="Node3D" parent="."]
@@ -387,5 +399,8 @@ script = ExtResource("12_bpnfg")
 [node name="LevelChange" type="Node" parent="Triggers/LevelChange" node_paths=PackedStringArray("_interactable")]
 script = ExtResource("13_hooqp")
 _interactable = NodePath("../Interactable")
-_levelToLoad = "res://Maps/TBImport/Outside.tscn"
+_levelToLoad = "res://Maps/Tests/MapSwapTest1.tscn"
 _triggerSave = true
+
+[node name="DevText" parent="Triggers/LevelChange" instance=ExtResource("14_6iaav")]
+mesh = SubResource("TextMesh_kw7jf")

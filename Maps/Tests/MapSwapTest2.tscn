@@ -1,0 +1,151 @@
+[gd_scene load_steps=18 format=3 uid="uid://5mqwyxdv0u7g"]
+
+[ext_resource type="Material" uid="uid://bk236i2u2sab6" path="res://Models/Crates/CrateMat.tres" id="1_5oidt"]
+[ext_resource type="FontFile" uid="uid://erdgllynwqkw" path="res://examples_dd3d/Roboto-Bold.ttf" id="2_y7mi6"]
+[ext_resource type="Material" uid="uid://bwskp1gs5aeud" path="res://Mono/DebugTools/passthrough.tres" id="3_60tv0"]
+[ext_resource type="Script" path="res://Mono/InteractionSystem/Interactable.cs" id="4_ives1"]
+[ext_resource type="Script" path="res://Mono/InteractionSystem/Act_LevelChange.cs" id="5_n3adq"]
+[ext_resource type="PackedScene" uid="uid://dmn3mi4c0tk3b" path="res://Mono/PlayerCharacter/PlayerCharacter.tscn" id="6_gfwxc"]
+[ext_resource type="PackedScene" uid="uid://cygviahqw3ib3" path="res://Items/Crates/Crate.tscn" id="7_q1cpq"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_xr7qv"]
+sky_horizon_color = Color(0.666936, 0.698954, 0.742633, 1)
+ground_bottom_color = Color(0.282742, 0.341814, 0.420533, 1)
+ground_horizon_color = Color(0.666936, 0.698954, 0.742633, 1)
+
+[sub_resource type="Sky" id="Sky_ar47x"]
+sky_material = SubResource("ProceduralSkyMaterial_xr7qv")
+
+[sub_resource type="Environment" id="Environment_unlfe"]
+background_mode = 2
+sky = SubResource("Sky_ar47x")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="BoxMesh" id="BoxMesh_wdcvc"]
+material = ExtResource("1_5oidt")
+size = Vector3(25, 1, 25)
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_dip4t"]
+points = PackedVector3Array(-12.5, -0.5, -12.5, -12.5, 0.5, -12.5, 12.5, -0.5, -12.5, -12.5, -0.5, 12.5, -12.5, 0.5, 12.5, 12.5, 0.5, -12.5, 12.5, -0.5, 12.5, 12.5, 0.5, 12.5)
+
+[sub_resource type="TextMesh" id="TextMesh_e3lpx"]
+material = ExtResource("3_60tv0")
+text = "Map 02"
+font = ExtResource("2_y7mi6")
+pixel_size = 0.025
+depth = 0.0
+
+[sub_resource type="TextMesh" id="TextMesh_mlba7"]
+material = ExtResource("3_60tv0")
+text = "Go to
+Map 01"
+font = ExtResource("2_y7mi6")
+pixel_size = 0.025
+depth = 0.0
+
+[sub_resource type="TextMesh" id="TextMesh_fwyv8"]
+material = ExtResource("3_60tv0")
+text = "Go to
+Outside"
+font = ExtResource("2_y7mi6")
+pixel_size = 0.025
+depth = 0.0
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_644k0"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_rmp3g"]
+
+[node name="MapSwapTest1" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_unlfe")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866025, -0.5, -2.18557e-08, 0, -4.37114e-08, 1, -0.5, 0.866025, 3.78552e-08, 0, 0, 0)
+shadow_enabled = true
+
+[node name="Floor" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_wdcvc")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Floor"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor/StaticBody3D"]
+shape = SubResource("ConvexPolygonShape3D_dip4t")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="Floor"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.27344, 2.13321, 2.38419e-07)
+mesh = SubResource("TextMesh_e3lpx")
+skeleton = NodePath("../..")
+
+[node name="Map2Tele" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 1.5, 0)
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="Map2Tele"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.163799, 1.2222, 2.38419e-07)
+mesh = SubResource("TextMesh_mlba7")
+skeleton = NodePath("../..")
+
+[node name="MeshInstance3D4" type="MeshInstance3D" parent="Map2Tele"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.163799, 1.2222, 1.92401)
+mesh = SubResource("TextMesh_fwyv8")
+skeleton = NodePath("../..")
+
+[node name="Interactable" type="Node" parent="Map2Tele"]
+script = ExtResource("4_ives1")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Map2Tele"]
+shape = SubResource("BoxShape3D_644k0")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Map2Tele"]
+mesh = SubResource("BoxMesh_rmp3g")
+
+[node name="Act_LevelChange" type="Node" parent="Map2Tele" node_paths=PackedStringArray("_interactable")]
+script = ExtResource("5_n3adq")
+_interactable = NodePath("../Interactable")
+_levelToLoad = "res://Maps/Tests/MapSwapTest1.tscn"
+_triggerSave = true
+
+[node name="OutdoorTele" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 1.5, 1.83493)
+
+[node name="Interactable" type="Node" parent="OutdoorTele"]
+script = ExtResource("4_ives1")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="OutdoorTele"]
+shape = SubResource("BoxShape3D_644k0")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="OutdoorTele"]
+mesh = SubResource("BoxMesh_rmp3g")
+
+[node name="Act_LevelChange" type="Node" parent="OutdoorTele" node_paths=PackedStringArray("_interactable")]
+script = ExtResource("5_n3adq")
+_interactable = NodePath("../Interactable")
+_levelToLoad = "res://Maps/TBImport/Outside.tscn"
+_triggerSave = true
+
+[node name="PlayerCharacter" parent="." instance=ExtResource("6_gfwxc")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.18208, 0.5, 1.82927)
+
+[node name="Crates" type="Node3D" parent="."]
+
+[node name="Crate" parent="Crates" instance=ExtResource("7_q1cpq")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.38204, 1, -1.47491)
+
+[node name="Crate2" parent="Crates" instance=ExtResource("7_q1cpq")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.50836, 1, -1.47491)
+
+[node name="Crate3" parent="Crates" instance=ExtResource("7_q1cpq")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.46166, 2.16378, -1.47491)
+
+[node name="Crate4" parent="Crates" instance=ExtResource("7_q1cpq")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.46166, 3.30406, -1.47491)
+
+[node name="Crate5" parent="Crates" instance=ExtResource("7_q1cpq")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.46166, 4.50228, -1.47491)
+
+[node name="Crate6" parent="Crates" instance=ExtResource("7_q1cpq")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.46166, 5.86327, -1.47491)
+
+[node name="Crate7" parent="Crates" instance=ExtResource("7_q1cpq")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.46166, 7.08345, -1.47491)

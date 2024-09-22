@@ -6,7 +6,7 @@ public partial class Destructable : Node3D
 {
 	// Exported Variables and Scenes
 	[ExportGroup("Health")]
-	[Export] private int _health;
+	[Export] public int Health;
 
 	[ExportGroup("Effects")]
 	[Export] private PackedScene _gibParticlePackedScene;
@@ -64,9 +64,9 @@ public partial class Destructable : Node3D
 
 	private void OnDamage(int damage)
 	{
-		_health -= damage;
+		Health -= damage;
 
-		if (_health <= 0 && !this.GetParent().IsQueuedForDeletion())
+		if (Health <= 0 && !this.GetParent().IsQueuedForDeletion())
 		{
 			if (this.GetParent() is RigidBody3D rigidBody3D)
 			{

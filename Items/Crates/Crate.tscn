@@ -52,9 +52,9 @@ mesh = ExtResource("2_rnwrd")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("BoxShape3D_edv7n")
 
-[node name="Destructable" type="Node3D" parent="."]
+[node name="Destructable" type="Node3D" parent="." groups=["Serializable"]]
 script = ExtResource("3_fnte4")
-_health = 15
+Health = 15
 _gibParticlePackedScene = ExtResource("4_w8t40")
 _damageAudioStreams = SubResource("AudioStreamRandomizer_y76tj")
 _breakAudioStreams = SubResource("AudioStreamRandomizer_5qiql")

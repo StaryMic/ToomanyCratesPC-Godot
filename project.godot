@@ -17,8 +17,8 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-SaveSystem="*res://Mono/SaveSystem/SaveSystem.cs"
 LevelManager="*res://Mono/LevelManager/LevelManager.cs"
+SaveSystem="*res://Mono/SaveSystem/SaveSystem.cs"
 
 [debug_draw_3d]
 
